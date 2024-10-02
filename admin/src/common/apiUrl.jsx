@@ -1,0 +1,41 @@
+
+const backendDomain = "http://localhost:5050/api";
+const SummaryApi = {
+  login: {
+    url: `${backendDomain}/login`,
+  },
+  getUserDetails: {
+    url: `${backendDomain}/get-user`,
+  },
+  userLogout: {
+    url: `${backendDomain}/user-logout`,
+  },
+  getAllUsers: {
+    url: `${backendDomain}/get-all-user`,
+  },
+  getAllCategory: {
+    url: `${backendDomain}/get-all-categories`,
+  },
+  addCategory: {
+    url: `${backendDomain}/add-category`,
+  },
+  deleteCategory: {
+    url: `${backendDomain}/delete-category`,
+  },
+  updateCategory: {
+    url: `${backendDomain}/update-category`,
+  },
+  getAllProduct: {
+    url: `${backendDomain}/get-all-products`,
+  },
+  addProduct: {
+    url: `${backendDomain}/add-product`,
+  },
+  deleteProduct: {
+    url: `${backendDomain}/delete-product`,
+  },
+  updateProduct: {
+    url: `${backendDomain}/update-product`,
+  },
+}; 
+export default SummaryApi;
