@@ -13,23 +13,19 @@ const productModel = new Schema(
       max: 100,
     },
     size: {
-      "1KG": {
-        // label: { type: String, default: "1KG" },
+      "100G": {
         quantity: { type: Number, min: 0, required: true },
         price: { type: Number, min: 0, required: true },
       },
-      "0,5KG": {
-        // label: { type: String, default: "0,5KG" },
+      "500G": {
+        quantity: { type: Number, min: 0, required: true },
+        price: { type: Number, min: 0, required: true },
+      },
+      "1KG": {
         quantity: { type: Number, min: 0, required: true },
         price: { type: Number, min: 0, required: true },
       },
       "5KG": {
-        // label: { type: String, default: "5KG" },
-        quantity: { type: Number, min: 0, required: true },
-        price: { type: Number, min: 0, required: true },
-      },
-      "10KG": {
-        // label: { type: String, default: "10KG" },
         quantity: { type: Number, min: 0, required: true },
         price: { type: Number, min: 0, required: true },
       },

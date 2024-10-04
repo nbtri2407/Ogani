@@ -9,17 +9,20 @@ import axios from "axios";
 import SummaryApi from "./common/apiUrl";
 import { useEffect } from "react";
 import { setUserDetails } from "./store/userSlice";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import Cart from "./components/Cart/Cart";
+import { useState } from "react";
+import ProductQuickviews from "./components/ProductQuickviews/ProductQuickviews";
 
 function App() {
   const dispatch = useDispatch();
 
   const getUserDetails = async () => {
     await axios
-      .get(SummaryApi.getUserDetails.url,{
+      .get(SummaryApi.getUserDetails.url, {
         withCredentials: true,
       })
-      .then(function (response) { 
+      .then(function (response) {
         dispatch(setUserDetails(response?.data?.data));
       })
       .catch(function (error) {
@@ -31,14 +34,16 @@ function App() {
     getUserDetails();
     // getCountCartProduct();
   });
+  const [openCart, setOpenCart] = useState(false);
 
-  return ( 
-    <Context.Provider value={{ }}>
-      <Navbar />
+  return (
+    <Context.Provider value={{}}>
+      <Cart onClose={() => setOpenCart(false)} open={openCart} />
+      <Navbar openCart={() => setOpenCart(true)} />
       <ToastContainer position="bottom-right" />
       <Outlet />
       <Footer />
-    </Context.Provider> 
+    </Context.Provider>
   );
 }
 

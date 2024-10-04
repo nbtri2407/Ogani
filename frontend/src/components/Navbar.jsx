@@ -21,8 +21,9 @@ import axios from "axios";
 import SummaryApi from "../common/apiUrl";
 import { toast } from "react-toastify";
 import DepartmentsList from "./DepartmentsList/DepartmentsList";
+import { IoCart } from "react-icons/io5";
 
-const Navbar = () => {
+const Navbar = ({ openCart }) => {
   const navigator = useNavigate();
   const user = useSelector((state) => state?.user?.user);
   const [showDepartments, setShowDepartments] = useState(false);
@@ -62,9 +63,28 @@ const Navbar = () => {
     };
   }, []);
 
+  const [carts, setCarts] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const getCartFromLocalStorage = () => {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+  };
+  useEffect(() => {
+    setCarts(getCartFromLocalStorage()) || [];
+    countTotalCartItems();
+  }, [localStorage.getItem("cart")]);
+
+  const countTotalCartItems = () => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const totalItems = cart.reduce((total, item) => {
+      return total + item.quantity;
+    }, 0); // Bắt đầu từ 0
+    setTotalItems(totalItems);
+  };
+
   return (
-    <div className="">
-      <div className="container mx-auto">
+    <div className="mt-6 px-6 xl:px-0">
+      <div className="mx-auto max-w-6xl">
         <div className="grid grid-cols-12 lg:grid-rows-1 grid-rows-2 lg:gap-6 justify-between items-center">
           <div className="lg:col-span-3 col-span-12 row-start-1 lg:pb-6 flex justify-between items-center">
             <img src={Logo} alt="logo" />
@@ -73,7 +93,7 @@ const Navbar = () => {
             </div>
           </div>
           <div className="col-span-6 row-start-1">
-            <ul className="lg:flex hidden xl:gap-16 lg:justify-between xl:justify-start text-[1rem] font-bold">
+            <ul className="lg:flex hidden lg:justify-between text-lg font-bold">
               <li>
                 <Link
                   to={"/"}
@@ -83,7 +103,7 @@ const Navbar = () => {
                       : "hover:text-primary transition-all"
                   }
                 >
-                  HOME
+                  TRANG CHỦ
                 </Link>
               </li>
               <li>
@@ -95,7 +115,19 @@ const Navbar = () => {
                       : "hover:text-primary transition-all"
                   }
                 >
-                  SHOP
+                  SẢN PHẨM
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/blog"}
+                  className={
+                    pathname === "/blog"
+                      ? "text-primary"
+                      : "hover:text-primary transition-all"
+                  }
+                >
+                  BÀI VIẾT
                 </Link>
               </li>
               <li>
@@ -107,7 +139,7 @@ const Navbar = () => {
                       : "hover:text-primary transition-all"
                   }
                 >
-                  ABOUT
+                  GIỚI THIỆU
                 </Link>
               </li>
               <li>
@@ -119,7 +151,7 @@ const Navbar = () => {
                       : "hover:text-primary transition-all"
                   }
                 >
-                  CONTACT
+                  LIÊN HỆ
                 </Link>
               </li>
             </ul>
@@ -134,7 +166,7 @@ const Navbar = () => {
                     className="text-[1rem] hover:text-primary hover:underline transition-all"
                     to={"/auth"}
                   >
-                    Login
+                    Đăng nhập
                   </Link>
                 )}
                 <FaUser
@@ -147,30 +179,47 @@ const Navbar = () => {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="absolute top-[140%] z-10 -left-3 py-2 text-[1.2rem] border bg-white shadow-lg before-arrow"
+                    className="absolute top-[140%] z-50 right-0 py-2 w-28 text-[1rem] border bg-white shadow-lg before-arrow"
                   >
-                    <li className="px-4 py-0.5 border-slate-100 border-b-1">
-                      <Link to={"#"}>Profile</Link>
+                    <li className="px-4 py-0.5 border-slate-100 border-b-1 hover:bg-slate-300 w-full">
+                      <Link to={"#"}>Hồ sơ</Link>
                     </li>
                     <li
-                      className="px-4 py-0.5 border-slate-100 border-b-1 cursor-pointer"
+                      className="px-4 py-0.5 border-slate-100 border-b-1 cursor-pointer hover:bg-slate-300 w-full"
                       onClick={handleLogout}
                     >
-                      Logout
+                      Đăng xuất
                     </li>
                   </motion.ul>
                 )}
+              </div> 
+              <div className="relative">
+                <FaHeart
+                  className="cursor-pointer text-2xl"
+                  onClick={openCart}
+                />
+                <span className="absolute px-1 -top-2 -right-3 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
+                  {totalItems}
+                </span>
               </div>
-              <FaHeart className="cursor-pointer" />
-              <BsFillHandbagFill className="cursor-pointer" />
-              <p className="text-[0.9rem]">
-                {" "}
-                item: <span className="font-bold">$150.00</span>
-              </p>
+              <div className="relative">
+                <IoCart
+                  className="cursor-pointer text-3xl"
+                  onClick={openCart}
+                />
+                <span className="absolute px-1 -top-2 -right-2 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
+                  {totalItems}
+                </span>
+              </div>
+
+              {/* <p className="text-[0.9rem]">
+                {" totalItems"} */}
+              {/* <span className="font-bold ">{formatPrice(totalPrice)}</span> */}
+              {/* </p> */}
             </div>
           </div>
         </div>
-        <div className="relative z-50">
+        <div className="relative z-40">
           <div className="grid grid-cols-12 gap-6 justify-between items-center ">
             <div className="lg:col-span-3 col-span-12 lg:row-start-1 relative">
               <div
@@ -196,7 +245,7 @@ const Navbar = () => {
                   type="text"
                   placeholder="What do you need?"
                 />
-                <button className="primary-btn rounded-none">SEARCH</button>
+                <button className="primary-btn rounded-none">TÌM KIẾM</button>
               </div>
             </div>
             <div className="hidden lg:flex lg:col-span-3 col-span-4 row-start-1  gap-6 justify-end items-center">
@@ -205,7 +254,7 @@ const Navbar = () => {
               </div>
               <div className="">
                 <p className="text-[1.1rem] font-bold">+65 11.188.888</p>
-                <p className="text-[0.9rem]">support 24/7 time</p>
+                <p className="text-[0.9rem]">hỗ trợ 24/7 time</p>
               </div>
             </div>
           </div>
@@ -238,7 +287,7 @@ const Navbar = () => {
       </div>
 
       {showMenuMb && (
-        <div className="bg-black/40 absolute top-0 left-0 right-0 bottom-0 lg:hidden flex z-20">
+        <div className="bg-black/40 absolute top-0 left-0 right-0 bottom-0 lg:hidden flex z-50">
           <motion.div
             initial={{ opacity: 0, x: -400 }}
             animate={{ opacity: 1, x: 0 }}
@@ -249,7 +298,10 @@ const Navbar = () => {
             <div className="flex gap-4 lg:justify-end justify-center text-[1.4rem]">
               <FaUser className="cursor-pointer" />
               <FaHeart className="cursor-pointer" />
-              <BsFillHandbagFill className="cursor-pointer" />
+              <BsFillHandbagFill
+                className="cursor-pointer"
+                onClick={openCart}
+              />
               <p className="text-[0.9rem]">
                 {" "}
                 item: <span className="font-bold">$150.00</span>

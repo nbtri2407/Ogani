@@ -215,6 +215,67 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
                 <h3 className="col-span-1">Phân loại</h3>
                 <div className="flex items-center gap-2 col-span-1">
                   <label
+                    for="small-input-100G"
+                    className="block text-sm font-bold text-black min-w-10"
+                  >
+                    100G
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    id="small-input-100G"
+                    placeholder="Số lượng"
+                    value={sizeData["100G"].quantity}
+                    onChange={(e) =>
+                      handleInputChange("100G", "quantity", e.target.value)
+                    }
+                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <input
+                    type="number"
+                    min={1000}
+                    id="small-input-100G1"
+                    placeholder="Giá bán"
+                    value={sizeData["100G"].price}
+                    onChange={(e) =>
+                      handleInputChange("100G", "price", e.target.value)
+                    }
+                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div className="flex items-center gap-2 col-span-1">
+                  <label
+                    for="small-input-500G"
+                    className="block text-sm font-bold text-black"
+                  >
+                    500G
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    id="small-input-500G"
+                    placeholder="Số lượng"
+                    value={sizeData["500G"].quantity}
+                    onChange={(e) =>
+                      handleInputChange("500G", "quantity", e.target.value)
+                    }
+                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <input
+                    type="number"
+                    min={1000}
+                    id="small-input-500G1"
+                    placeholder="Giá bán"
+                    value={sizeData["500G"].price}
+                    onChange={(e) =>
+                      handleInputChange("500G", "price", e.target.value)
+                    }
+                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2 col-span-1">
+                  <label
                     for="small-input-1kg"
                     className="block text-sm font-bold text-black min-w-10"
                   >
@@ -245,37 +306,6 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
                 </div>
                 <div className="flex items-center gap-2 col-span-1">
                   <label
-                    for="small-input-0.5kg"
-                    className="block text-sm font-bold text-black"
-                  >
-                    0,5KG
-                  </label>
-                  <input
-                    type="number"
-                    min={0}
-                    id="small-input-0.5kg"
-                    placeholder="Số lượng"
-                    value={sizeData["0,5KG"].quantity}
-                    onChange={(e) =>
-                      handleInputChange("0,5KG", "quantity", e.target.value)
-                    }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <input
-                    type="number"
-                    min={1000}
-                    id="small-input-0.5kg1"
-                    placeholder="Giá bán"
-                    value={sizeData["0,5KG"].price}
-                    onChange={(e) =>
-                      handleInputChange("0,5KG", "price", e.target.value)
-                    }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2 col-span-1">
-                  <label
                     for="small-input-5kg"
                     className="block text-sm font-bold text-black min-w-10"
                   >
@@ -300,36 +330,6 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
                     value={sizeData["5KG"].price}
                     onChange={(e) =>
                       handleInputChange("5KG", "price", e.target.value)
-                    }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                <div className="flex items-center gap-2 col-span-1">
-                  <label
-                    for="small-input-10kg"
-                    className="block text-sm font-bold text-black min-w-10"
-                  >
-                    10KG
-                  </label>
-                  <input
-                    type="number"
-                    min={0}
-                    id="small-input-10kg"
-                    placeholder="Số lượng"
-                    value={sizeData["10KG"].quantity}
-                    onChange={(e) =>
-                      handleInputChange("10KG", "quantity", e.target.value)
-                    }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <input
-                    type="number"
-                    min={1000}
-                    id="small-input-10kg1"
-                    placeholder="Giá bán"
-                    value={sizeData["10KG"].price}
-                    onChange={(e) =>
-                      handleInputChange("10KG", "price", e.target.value)
                     }
                     className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
                   />

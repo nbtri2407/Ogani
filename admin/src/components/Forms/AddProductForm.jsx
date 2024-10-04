@@ -17,10 +17,10 @@ const AddProductForm = ({ onClose, callBack }) => {
   });
 
   const [sizeData, setSizeData] = useState({
+    "100G": { quantity: "", price: "" },
+    "500G": { quantity: "", price: "" },
     "1KG": { quantity: "", price: "" },
-    "0,5KG": { quantity: "", price: "" },
     "5KG": { quantity: "", price: "" },
-    "10KG": { quantity: "", price: "" },
   });
 
   const handleInputChange = (weight, field, value) => {
@@ -183,125 +183,126 @@ const AddProductForm = ({ onClose, callBack }) => {
               {/* Quantity and Price */}
               <div className="grid grid-cols-1 gap-2 mt-1 mb-4">
                 <h3 className="col-span-1">Phân loại</h3>
-                <div className="flex items-center gap-2 col-span-1">
+                <div className="grid grid-cols-12 gap-2 items-center col-span-1 text-end">
                   <label
-                    for="small-input-1kg"
-                    className="block text-sm font-bold text-black min-w-10"
+                    for="small-input-100G"
+                    className="block text-sm font-bold text-black min-w-10 col-span-2"
+                  >
+                    100G
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    id="small-input-100G"
+                    placeholder="Số lượng"
+                    value={sizeData["100G"].quantity}
+                    onChange={(e) =>
+                      handleInputChange("100G", "quantity", e.target.value)
+                    }
+                    className="block col-span-5 w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <input
+                    type="number"
+                    min={1000}
+                    id="small-input-100G1"
+                    placeholder="Giá bán"
+                    value={sizeData["100G"].price}
+                    onChange={(e) =>
+                      handleInputChange("100G", "price", e.target.value)
+                    }
+                    className="block col-span-5 w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                {/* flex items-center gap-2  */}
+                <div className="grid grid-cols-12 gap-2 items-center col-span-1 text-end"> 
+                  <label
+                    for="small-input-500g"
+                    className="block text-sm font-bold text-black col-span-2"
+                  >
+                    500G
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    id="small-input-500g"
+                    placeholder="Số lượng"
+                    value={sizeData["500G"].quantity}
+                    onChange={(e) =>
+                      handleInputChange("500G", "quantity", e.target.value)
+                    }
+                    className="block col-span-5 w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <input
+                    type="number"
+                    min={1000}
+                    id="small-input-500g1"
+                    placeholder="Giá bán"
+                    value={sizeData["500G"].price}
+                    onChange={(e) =>
+                      handleInputChange("500G", "price", e.target.value)
+                    }
+                    className="block col-span-5 w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-12 gap-2 items-center col-span-1 text-end">
+                  <label
+                    for="small-input-1KG"
+                    className="block col-span-2 text-sm font-bold text-black min-w-10"
                   >
                     1KG
                   </label>
                   <input
                     type="number"
                     min={0}
-                    id="small-input-1kg"
+                    id="small-input-1KG"
                     placeholder="Số lượng"
                     value={sizeData["1KG"].quantity}
                     onChange={(e) =>
                       handleInputChange("1KG", "quantity", e.target.value)
                     }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                    className="block col-span-5 w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
                   />
                   <input
                     type="number"
                     min={1000}
-                    id="small-input-1kg1"
+                    id="small-input-1KG1"
                     placeholder="Giá bán"
                     value={sizeData["1KG"].price}
                     onChange={(e) =>
                       handleInputChange("1KG", "price", e.target.value)
                     }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                    className="block col-span-5 w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                <div className="flex items-center gap-2 col-span-1">
+                <div className="grid grid-cols-12 gap-2 items-center col-span-1 text-end">
                   <label
-                    for="small-input-0.5kg"
-                    className="block text-sm font-bold text-black"
-                  >
-                    0,5KG
-                  </label>
-                  <input
-                    type="number"
-                    min={0}
-                    id="small-input-0.5kg"
-                    placeholder="Số lượng"
-                    value={sizeData["0,5KG"].quantity}
-                    onChange={(e) =>
-                      handleInputChange("0,5KG", "quantity", e.target.value)
-                    }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <input
-                    type="number"
-                    min={1000}
-                    id="small-input-0.5kg1"
-                    placeholder="Giá bán"
-                    value={sizeData["0,5KG"].price}
-                    onChange={(e) =>
-                      handleInputChange("0,5KG", "price", e.target.value)
-                    }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2 col-span-1">
-                  <label
-                    for="small-input-5kg"
-                    className="block text-sm font-bold text-black min-w-10"
+                    for="small-input-5KG"
+                    className="block col-span-2 text-sm font-bold text-black min-w-10"
                   >
                     5KG
                   </label>
                   <input
                     type="number"
                     min={0}
-                    id="small-input-5kg"
+                    id="small-input-5KG"
                     placeholder="Số lượng"
                     value={sizeData["5KG"].quantity}
                     onChange={(e) =>
                       handleInputChange("5KG", "quantity", e.target.value)
                     }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                    className="block col-span-5 w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
                   />
                   <input
                     type="number"
                     min={1000}
-                    id="small-input-5kg1"
+                    id="small-input-5KG1"
                     placeholder="Giá bán"
                     value={sizeData["5KG"].price}
                     onChange={(e) =>
                       handleInputChange("5KG", "price", e.target.value)
                     }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                <div className="flex items-center gap-2 col-span-1">
-                  <label
-                    for="small-input-10kg"
-                    className="block text-sm font-bold text-black min-w-10"
-                  >
-                    10KG
-                  </label>
-                  <input
-                    type="number"
-                    min={0}
-                    id="small-input-10kg"
-                    placeholder="Số lượng"
-                    value={sizeData["10KG"].quantity}
-                    onChange={(e) =>
-                      handleInputChange("10KG", "quantity", e.target.value)
-                    }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <input
-                    type="number"
-                    min={1000}
-                    id="small-input-10kg1"
-                    placeholder="Giá bán"
-                    value={sizeData["10KG"].price}
-                    onChange={(e) =>
-                      handleInputChange("10KG", "price", e.target.value)
-                    }
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
+                    className="block col-span-5 w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -374,7 +375,7 @@ const AddProductForm = ({ onClose, callBack }) => {
           </div>
           <button
             type="submit"
-            className="primary-btn mt-2 lg:w-[30%] w-full mx-auto bg-primary py-2 text-white hover:bg-primary/80"
+            className="float-end primary-btn mt-2 lg:w-[30%] w-full mx-auto bg-primary py-2 text-white hover:bg-primary/80"
           >
             Thêm sản phẩm
           </button>

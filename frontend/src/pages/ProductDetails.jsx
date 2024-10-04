@@ -11,8 +11,7 @@ const ProductDetails = () => {
   const productId = useParams();
 
   const [productDetails, setProductDetails] = useState({});
-  const [quantity, setQuantity] = useState(1);
-  const [maxQuantity, setMaxQuantity] = useState(99);
+
   const [showImg, setShowImg] = useState("");
   const fetchProductDetails = async () => {
     await axios
@@ -60,6 +59,8 @@ const ProductDetails = () => {
   const sizeData = productDetails.size || {};
   const [selectedSize, setSelectedSize] = useState(null);
 
+  const [quantity, setQuantity] = useState(1);
+  const [maxQuantity, setMaxQuantity] = useState(99);
   const handleSubQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -91,7 +92,7 @@ const ProductDetails = () => {
   }, []);
 
   return (
-    <div className="bg-white container mx-auto">
+    <div className="bg-white mx-auto max-w-6xl px-6 xl:px-0">
       <div className="pt-16 grid grid-cols-2 gap-4">
         <nav className="col-span-2 mb-4" aria-label="Breadcrumb">
           <ol
@@ -127,14 +128,20 @@ const ProductDetails = () => {
         </nav>
         <div className="md:col-span-1 col-span-2 grid gap-4">
           <div className="w-full">
-            <img className="h-auto w-full rounded-lg" src={showImg} alt="" />
+            <img
+              className="h-auto w-full rounded-lg border border-slate-300"
+              src={showImg}
+              alt=""
+            />
           </div>
           <div className="grid grid-cols-4 gap-4">
             {productDetails?.imageUrl?.map((imgUrl, i) => {
               return (
                 <div className="cursor-pointer" key={i}>
                   <img
-                    className="h-auto max-w-full rounded-lg"
+                    className={`h-auto max-w-full rounded-lg hover:scale-105 hover:border border-slate-300 transition-all ${
+                      imgUrl === showImg ? "border" : ""
+                    }`}
                     src={imgUrl}
                     alt=""
                     onClick={() => handleChangeImg(imgUrl)}
@@ -179,7 +186,11 @@ const ProductDetails = () => {
               getPriceRange(productDetails).minPrice
             )} - ${formatPrice(getPriceRange(productDetails).maxPrice)}`}</p>
           )}
-
+          <div className="mt-6">
+            <p className="text-slate-500 text-ellipsis lg:line-clamp-none line-clamp-5">
+              {productDetails.description}
+            </p>
+          </div>
           {/* Sizes */}
           <div className="mt-6">
             <div className="flex items-center justify-between">
@@ -243,7 +254,7 @@ const ProductDetails = () => {
           </div>
 
           <div className="mt-6 flex gap-2">
-            <div className="relative flex items-center max-w-[8rem]">
+            <div className="relative flex items-center max-w-[10rem]">
               <button
                 type="button"
                 onClick={handleSubQuantity}
@@ -315,29 +326,29 @@ const ProductDetails = () => {
               >
                 <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
               </svg>
-              Thêm vào giỏ hàng
+              Mua ngay
             </button>
             <button
               type="button"
-              class="text-primary border border-primary hover:bg-primary hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2"
+              className="text-primary border border-primary hover:bg-primary hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2"
             >
               <svg
-              className="w-5 h-5 text-gray-800"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
-              />
-            </svg>
+                className="w-5 h-5 text-gray-800"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
+                />
+              </svg>
               <span className="sr-only">Icon description</span>
             </button>
           </div>

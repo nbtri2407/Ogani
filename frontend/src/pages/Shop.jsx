@@ -8,10 +8,6 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
@@ -113,14 +109,8 @@ const Shop = () => {
   };
 
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const handleFilter = ({
-    categoryFilter,
-    priceFilter,
-    nameFilter,
-    sortType,
-  }) => {
+  const handleFilter = ({ categoryFilter, priceFilter, nameFilter }) => {
     let filtered = products;
-
     if (categoryFilter.length > 0) {
       filtered = filtered.filter((product) => {
         return categoryFilter.includes(product.category.categoryName);
@@ -142,23 +132,21 @@ const Shop = () => {
         product.productName.toLowerCase().includes(nameFilter.toLowerCase())
       );
     }
-
     if (sortType != "") {
       filtered = filtered.sort((a, b) => {
         if (sortType === "nameAsc") {
-          return b.productName.localeCompare(a.productName);
-        } else if (sortType === "nameDesc") {
           return a.productName.localeCompare(b.productName);
+        } else if (sortType === "nameDesc") {
+          return b.productName.localeCompare(a.productName);
         } else if (sortType === "priceAsc") {
-          return b.size["10KG"].price - a.size["10KG"].price;
+          return a.size["5KG"].price - b.size["5KG"].price;
         } else if (sortType === "priceDesc") {
-          return a.size["10KG"].price - b.size["10KG"].price;
+          return b.size["5KG"].price - a.size["5KG"].price;
         } else {
           return 0;
         }
       });
     }
-
     setFilteredProducts(filtered);
   };
 
@@ -167,7 +155,6 @@ const Shop = () => {
       categoryFilter,
       priceFilter,
       nameFilter,
-      sortType,
     });
   }, [categoryFilter, priceFilter, nameFilter, sortType]);
 
@@ -181,7 +168,7 @@ const Shop = () => {
   useEffect(() => {
     setTotalPages(Math.ceil(filteredProducts.length / pageSize));
     setPaginatedData(paginate(filteredProducts, pageSize, currentPage));
-  }, [filteredProducts, currentPage]);
+  }, [filteredProducts, currentPage, sortType]);
 
   const paginate = (array, pageSize, currentPage) => {
     const startIndex = (currentPage - 1) * pageSize;
@@ -203,7 +190,7 @@ const Shop = () => {
         <Dialog
           open={mobileFiltersOpen}
           onClose={setMobileFiltersOpen}
-          className="relative z-40 lg:hidden"
+          className="relative z-50 lg:hidden"
         >
           <DialogBackdrop
             transition
@@ -366,14 +353,17 @@ const Shop = () => {
           </div>
         </Dialog>
 
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-6xl px-6 xl:px-0">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
             <h1 className="lg:text-4xl text-xl font-bold tracking-tight text-gray-900">
               Tất cả sản phẩm
             </h1>
 
-            <div className="flex items-center border border-slate-300 rounded-md overflow-hidden outline-none">
-              <select onChange={(e) => setSortType(e.target.value)}>
+            <div className="flex items-center justify-between">
+              <select
+                className="flex-1 max-w-[70%] border border-slate-300 rounded-md outline-none"
+                onChange={(e) => setSortType(e.target.value)}
+              >
                 <option value="">Sort by</option>
                 <option value="nameAsc">Name A-Z</option>
                 <option value="nameDesc">Name Z-A</option>
@@ -383,7 +373,7 @@ const Shop = () => {
               <button
                 type="button"
                 onClick={() => setMobileFiltersOpen(true)}
-                className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
+                className="p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
               >
                 <span className="sr-only">Filters</span>
                 <FunnelIcon aria-hidden="true" className="h-5 w-5" />
@@ -552,9 +542,7 @@ const Shop = () => {
                   marginPagesDisplayed={2}
                   pageRangeDisplayed={3}
                   onPageChange={handlePageClick}
-                  containerClassName={
-                    "flex items-center justify-center gap-1"
-                  }
+                  containerClassName={"flex items-center justify-center gap-1"}
                   pageClassName={"px-3 py-1 border border-blue-400 "}
                   pageLinkClassName={"page-link"}
                   previousClassName={"px-3 py-1 border border-blue-400"}

@@ -38,7 +38,7 @@ const DepartmentsList = ({ status }) => {
       initial={{ height: 0 }}
       variants={list}
       animate={status ? "show" : "hidden"}
-      className="w-full z-50 overflow-auto border text-start px-6 text-[1rem] transition-all bg-slate-50 scrollbar-custom"
+      className="w-full z-40 overflow-auto border text-start px-6 text-[1rem] transition-all bg-slate-50 scrollbar-custom"
     >
       {categories?.map((c, i) => {
         return (
