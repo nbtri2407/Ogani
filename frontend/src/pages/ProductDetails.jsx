@@ -91,6 +91,47 @@ const ProductDetails = () => {
     fetchProductDetails();
   }, []);
 
+  const addOrUpdateProductInCart = () => { 
+
+    if (selectedSize == null) {
+      toast.error("Chọn phân loại sản phẩm");
+      return;
+    }
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingProductIndex = cart.findIndex(
+      (item) =>
+        item.product._id === productDetails._id && item.size === selectedSize
+    );
+    if (existingProductIndex !== -1) { 
+
+      if (
+        Number(cart[existingProductIndex].quantity) + Number(quantity) <
+        Number(cart[existingProductIndex].product.size[selectedSize].quantity)
+      ) {
+        cart[existingProductIndex].quantity =
+          Number(cart[existingProductIndex].quantity) + Number(quantity);
+      } else {
+        cart[existingProductIndex].quantity = +Number(
+          cart[existingProductIndex].product.size[selectedSize].quantity
+        );
+      }
+    } else {
+      const newItem = {
+        product: productDetails,
+        quantity,
+        size: selectedSize,
+      };
+      console.log(newItem);
+      cart.push(newItem);
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    toast.success("Đã thêm vào giỏ hàng");
+    const cartEvent = new CustomEvent("cartChanged", {
+      detail: "newCart",
+    });
+    window.dispatchEvent(cartEvent);
+  };
+
   return (
     <div className="bg-white mx-auto max-w-6xl px-6 xl:px-0">
       <div className="pt-16 grid grid-cols-2 gap-4">
@@ -254,7 +295,7 @@ const ProductDetails = () => {
           </div>
 
           <div className="mt-6 flex gap-2">
-            <div className="relative flex items-center max-w-[10rem]">
+            <div className="relative flex items-center max-w-[8rem]">
               <button
                 type="button"
                 onClick={handleSubQuantity}
@@ -314,6 +355,7 @@ const ProductDetails = () => {
               </button>
             </div>
             <button
+              onClick={addOrUpdateProductInCart}
               type="button"
               className="text-white bg-primary hover:bg-primary/80 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2"
             >
@@ -326,14 +368,14 @@ const ProductDetails = () => {
               >
                 <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
               </svg>
-              Mua ngay
+              Chọn mua
             </button>
             <button
               type="button"
               className="text-primary border border-primary hover:bg-primary hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2"
             >
               <svg
-                className="w-5 h-5 text-gray-800"
+                className="w-5 h-5"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

@@ -45,7 +45,6 @@
 
 .read-the-docs {
   color: #888;
-  
 }
 
 .before-arrow::before {
@@ -75,8 +74,14 @@
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
-} 
-.no-scrollbar {
-  -ms-overflow-style: none;  
-  scrollbar-width: none;   
 }
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+option:disabled {
+  color: rgb(158, 160, 163);
+  background-color: #eaeaea;
+  font-weight: bold;
+} 

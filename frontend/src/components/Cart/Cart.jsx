@@ -12,7 +12,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import formatPrice from "../../helper/formatPrice";
 import { toast } from "react-toastify";
 
-const Cart = ({ callBack, onClose, open }) => {
+const Cart = ({ onClose, open }) => {
   const [carts, setCarts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
@@ -23,14 +23,14 @@ const Cart = ({ callBack, onClose, open }) => {
     setCarts(getCartFromLocalStorage()) || [];
     calculateTotalCartPrice();
   }, [localStorage.getItem("cart")]);
-  
+
   const calculateTotalCartPrice = () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const total = cart.reduce((sum, item) => {
       return sum + item.quantity * item.product.size[item.size].price;
     }, 0);
     setTotalPrice(total);
-  }; 
+  };
 
   const removeProductFromCart = (cartItemDelete, size) => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -62,7 +62,6 @@ const Cart = ({ callBack, onClose, open }) => {
       updateQtyCart(cartItem, size, maxQty);
       toast.error("Tối đa");
     }
-    // updateQtyCart(cartItem, qty);
   };
 
   const handleSubQuantity = (cartItem, size, quantity) => {
@@ -84,17 +83,53 @@ const Cart = ({ callBack, onClose, open }) => {
 
   const handleChangeSize = (cartItem, e) => {
     const sizeUpdate = e.target.value;
+    const qtyUpdate = cartItem.quantity;
+
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const isDuplicate = cart.findIndex(
+      (item) =>
+        item.product._id === cartItem.product._id && item.size === sizeUpdate
+    );
     const existingProductIndex = cart.findIndex(
       (item) =>
         item.product._id === cartItem.product._id && item.size === cartItem.size
     );
-    if (existingProductIndex !== -1) {
-      cart[existingProductIndex].size = sizeUpdate;
+    if (isDuplicate !== -1) {
+      if (
+        Number(cart[isDuplicate].quantity) + qtyUpdate <
+        Number(cart[isDuplicate].product.size[sizeUpdate].quantity)
+      ) {
+        cart[isDuplicate].quantity =
+          qtyUpdate + Number(cart[isDuplicate].quantity);
+      } else {
+        cart[isDuplicate].quantity = +Number(
+          cart[isDuplicate].product.size[sizeUpdate].quantity
+        );
+      }
+    } else {
+      console.log("b");
+
+      if (existingProductIndex !== -1) {
+        console.log("c");
+        cart[existingProductIndex].size = sizeUpdate;
+        if (
+          cart[existingProductIndex].quantity >
+          cart[existingProductIndex].product.size[sizeUpdate].quantity
+        ) {
+          cart[existingProductIndex].quantity = +Number(
+            cart[existingProductIndex].product.size[sizeUpdate].quantity
+          );
+        }
+      }
     }
+
     localStorage.setItem("cart", JSON.stringify(cart));
     setCarts(getCartFromLocalStorage()) || [];
+    removeProductFromCart(cartItem.product, cartItem.size);
   };
+
+  // console.log(carts);
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
@@ -135,7 +170,10 @@ const Cart = ({ callBack, onClose, open }) => {
                         className="-my-6 divide-y divide-gray-200"
                       >
                         {carts?.map((cart, i) => (
-                          <li key={i} className="flex py-6">
+                          <li
+                            key={cart.product.productName + i}
+                            className="flex py-6"
+                          >
                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                               <img
                                 alt={cart.product.productName}
@@ -250,13 +288,22 @@ const Cart = ({ callBack, onClose, open }) => {
                                   Phân loại:
                                 </p> */}
                                 <select
+                                  // defaultValue={cart.size}
                                   onChange={(e) => handleChangeSize(cart, e)}
-                                  className="h-8 text-xs rounded-lg text-gray-700 outline-none border-gray-300"
+                                  className="h-8 text-xs rounded-lg text-gray-700 outline-none border-gray-300 cursor-pointer"
                                 >
                                   {sizeOption.map((size) => (
                                     <option
+                                      key={size}
                                       value={size}
-                                      selected={cart.size === size}
+                                      disabled={
+                                        cart.product.size[size].quantity > 0
+                                          ? false
+                                          : true
+                                      }
+                                      selected={
+                                        cart.size === size ? true : false
+                                      }
                                     >
                                       {size}
                                     </option>

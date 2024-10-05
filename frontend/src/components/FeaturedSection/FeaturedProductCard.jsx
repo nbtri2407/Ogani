@@ -24,15 +24,15 @@ const FeaturedProductCard = ({ product }) => {
     sellingPrice = Math.round(product.price * ((100 - product.discount) / 100));
   }
 
-  const addToCart = (product, q) => {
-    const item = {
-      product,
-      quantity: q,
-    };
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    cart.push(item);
-    localStorage.setItem("cart", JSON.stringify(cart));
-  };
+  // const addToCart = (product, q) => {
+  //   const item = {
+  //     product,
+  //     quantity: q,
+  //   };
+  //   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  //   cart.push(item);
+  //   localStorage.setItem("cart", JSON.stringify(cart));
+  // };
 
   const [openProductQuickView, setOpenProductQuickView] = useState(false);
 
@@ -91,7 +91,7 @@ const FeaturedProductCard = ({ product }) => {
           </div>
         </div>
         <a href={`/product/${product._id}`} className="">
-          <p className="md:text-xl  font-bold line-clamp-1">
+          <p className="md:text-xl  font-bold line-clamp-1 hover:underline">
             {product.productName}
           </p>
         </a>

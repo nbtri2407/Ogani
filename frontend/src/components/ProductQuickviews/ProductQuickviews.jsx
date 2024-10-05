@@ -74,8 +74,17 @@ const ProductQuickviews = ({ product, onClose, open }) => {
       (item) => item.product._id === newProduct._id && item.size === size
     );
     if (existingProductIndex !== -1) {
-      cart[existingProductIndex].quantity =
-        Number(cart[existingProductIndex].quantity) + Number(quantity);
+      if (
+        Number(cart[existingProductIndex].quantity) + Number(quantity) <
+        Number(cart[existingProductIndex].product.size[size].quantity)
+      ) {
+        cart[existingProductIndex].quantity =
+          Number(cart[existingProductIndex].quantity) + Number(quantity);
+      } else {
+        cart[existingProductIndex].quantity = +Number(
+          cart[existingProductIndex].product.size[selectedSize].quantity
+        );
+      }
     } else {
       const newItem = {
         product: newProduct,
@@ -86,10 +95,12 @@ const ProductQuickviews = ({ product, onClose, open }) => {
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     toast.success("Đã thêm vào giỏ hàng");
+    const cartEvent = new CustomEvent("cartChanged", {
+      detail: "newCart",
+    });
+    window.dispatchEvent(cartEvent);
     onClose();
   };
-
-  
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">

@@ -29,7 +29,6 @@ const Navbar = ({ openCart }) => {
   const [showDepartments, setShowDepartments] = useState(false);
   const [showMenuMb, setShowMenuMb] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [maxheight, setMaxHeight] = useState(0);
   const location = useLocation();
   const pathname = location?.pathname;
 
@@ -67,18 +66,30 @@ const Navbar = ({ openCart }) => {
   const [totalItems, setTotalItems] = useState(0);
 
   const getCartFromLocalStorage = () => {
-    return JSON.parse(localStorage.getItem("cart")) || [];
+    return JSON.parse(localStorage.getItem("cart"));
   };
+
   useEffect(() => {
-    setCarts(getCartFromLocalStorage()) || [];
+    setCarts(getCartFromLocalStorage());
     countTotalCartItems();
   }, [localStorage.getItem("cart")]);
+  useEffect(() => {
+    setCarts(getCartFromLocalStorage());
+    countTotalCartItems();
+  }, []);
+  useEffect(() => {
+    countTotalCartItems();
+  }, [carts]);
+
+  window.addEventListener("cartChanged", (event) => {
+    countTotalCartItems();
+  });
 
   const countTotalCartItems = () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const totalItems = cart.reduce((total, item) => {
       return total + item.quantity;
-    }, 0); // Bắt đầu từ 0
+    }, 0);
     setTotalItems(totalItems);
   };
 
@@ -192,24 +203,25 @@ const Navbar = ({ openCart }) => {
                     </li>
                   </motion.ul>
                 )}
-              </div> 
+              </div>
               <div className="relative">
-                <FaHeart
-                  className="cursor-pointer text-2xl"
-                  onClick={openCart}
-                />
-                <span className="absolute px-1 -top-2 -right-3 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
-                  {totalItems}
-                </span>
+                <FaHeart className="cursor-pointer text-2xl" />
+                {totalItems > 0 && (
+                  <span className="absolute px-1 -top-2 -right-3 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
+                    {totalItems}
+                  </span>
+                )}
               </div>
               <div className="relative">
                 <IoCart
                   className="cursor-pointer text-3xl"
                   onClick={openCart}
                 />
-                <span className="absolute px-1 -top-2 -right-2 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
-                  {totalItems}
-                </span>
+                {totalItems > 0 && (
+                  <span className="absolute px-1 -top-2 -right-3 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
+                    {totalItems}
+                  </span>
+                )}
               </div>
 
               {/* <p className="text-[0.9rem]">
