@@ -10,8 +10,6 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import formatPrice from "../../helper/formatPrice";
-import SummaryApi from "../../common/apiUrl";
-import axios from "axios";
 
 const Cart = ({ onClose, open }) => {
   const [carts, setCarts] = useState([]);
@@ -20,6 +18,11 @@ const Cart = ({ onClose, open }) => {
   const getCartFromLocalStorage = () => {
     return JSON.parse(localStorage.getItem("cart")) || [];
   };
+
+  window.addEventListener("cartChanged", (event) => {
+    setCarts(getCartFromLocalStorage()) || [];
+    calculateTotalCartPrice();
+  });
 
   useEffect(() => {
     setCarts(getCartFromLocalStorage()) || [];
@@ -60,7 +63,7 @@ const Cart = ({ onClose, open }) => {
   };
 
   const handleChangeQuantity = (cartItem, size, e) => {
-    const qty = +e.target.value;
+    const qty = +e.target.value; 
     const maxQty = cartItem.size[size].quantity;
     if (qty < maxQty) {
       updateQtyCart(cartItem, size, qty);
@@ -128,7 +131,7 @@ const Cart = ({ onClose, open }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
     setCarts(getCartFromLocalStorage()) || [];
     removeProductFromCart(cartItem.product, cartItem.size);
-  }; 
+  };
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
@@ -237,7 +240,7 @@ const Cart = ({ onClose, open }) => {
                                           e
                                         )
                                       }
-                                      min={0}
+                                      min={1}
                                       type="text"
                                       id="quantity-input"
                                       aria-describedby="helper-text-explanation"
@@ -308,9 +311,15 @@ const Cart = ({ onClose, open }) => {
                                     </option>
                                   ))}
                                 </select>
-                                <p className="text-gray-700">
-                                  Kho: {cart?.product.size[cart.size].quantity}
-                                </p>
+                                {cart?.product.size[cart.size].quantity == 0 ? (
+                                  <p className="text-red-700">Hết hàng</p>
+                                ) : (
+                                  <p className="text-gray-700">
+                                    Kho:{" "}
+                                    {cart?.product.size[cart.size].quantity}
+                                  </p>
+                                )}
+
                                 <div className="flex">
                                   <button
                                     type="button"

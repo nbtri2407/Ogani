@@ -23,6 +23,7 @@ const addAddress = require("../controllers/address/addAddressController");
 const getAllAddress = require("../controllers/address/getAllAddress");
 const setDefaultAddress = require("../controllers/address/setDefaultAddress");
 const updateAddress = require("../controllers/address/updateAddress");
+const createOrder = require("../controllers/order/createOrder");
 const router = express.Router();
 
 router.post("/login", login);
@@ -55,5 +56,8 @@ router.post("/address", authToken, addAddress);
 router.put("/address", authToken, updateAddress);
 router.delete("/address", authToken, addAddress);
 router.post("/default-address", authToken, setDefaultAddress);
+
+router.post("/order", authToken, createOrder);
+
 // setDefaultAddress
 module.exports = router;

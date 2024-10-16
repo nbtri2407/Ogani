@@ -39,6 +39,9 @@ const SummaryApi = {
   setDefaultAddress: {
     url: `${backendDomain}/default-address`,
   },
+  order: {
+    url: `${backendDomain}/order`,
+  },
 };
 //default-address
 export default SummaryApi;

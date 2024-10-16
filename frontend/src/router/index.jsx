@@ -8,6 +8,7 @@ import PageNotFound from "../pages/PageNotFound";
 import ProductDetails from "../pages/ProductDetails";
 import Checkout from "../pages/Checkout";
 import Profile from "../pages/Profile";
+import OrderSuccess from "../pages/OrderSuccess";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
         element: <Checkout />,
       },
       {
+        path: "order-success",
+        element: <OrderSuccess />,
+      },
+      {
         path: "profile",
         element: <Profile />,
       },
@@ -46,6 +51,7 @@ const router = createBrowserRouter([
         path: "/auth",
         element: <LoginSignup />,
       },
+      // OrderSuccess
     ],
   },
 

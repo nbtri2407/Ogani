@@ -16,12 +16,11 @@ async function updateCart(req, res) {
       await newCartItem.save();
     }
 
-    // const userCarts = await cartItemModel
-    //   .find({ user: userId })
-    //   .populate("product");
+    const userCarts = await cartItemModel.find({ user: userId }).populate("product");
+
     res.status(200).json({
       message: "Cart updated successfully",
-      // data: userCarts,
+      data: userCarts,
     });
   } catch (error) {
     res.status(400).json({

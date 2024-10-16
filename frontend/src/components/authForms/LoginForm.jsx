@@ -16,8 +16,8 @@ const LoginForm = ({ callBack }) => {
   const [error, setError] = useState("");
   const navigator = useNavigate();
   const goBack = () => {
-    // navigator(-1);
-    navigator("/checkout");
+    navigator(-1);
+    // navigator("/checkout");
   };
   const getCartFromLocalStorage = () => {
     return JSON.parse(localStorage.getItem("cart")) || [];

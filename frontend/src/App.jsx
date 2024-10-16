@@ -34,6 +34,11 @@ function App() {
     return JSON.parse(localStorage.getItem("cart")) || [];
   };
 
+  const setCartLocal = (cart) => {
+    localStorage.removeItem("cart");
+    localStorage.setItem("cart", JSON.stringify(cart));
+  };
+
   const updateCartToDB = async () => {
     await axios
       .post(
@@ -45,7 +50,14 @@ function App() {
           withCredentials: true,
         }
       )
-      .then(function (response) {})
+      .then(function (response) {
+        localStorage.removeItem("cart");
+        setCartLocal(response.data.data);
+        const cartEvent = new CustomEvent("cartChanged", {
+          detail: "newCart",
+        });
+        window.dispatchEvent(cartEvent);
+      })
       .catch(function (error) {
         console.log(error?.response?.data?.message);
       });
@@ -53,7 +65,7 @@ function App() {
 
   useEffect(() => {
     getUserDetails();
-    // getCountCartProduct();
+    // updateCartToDB();
   });
   const [openCart, setOpenCart] = useState(false);
 

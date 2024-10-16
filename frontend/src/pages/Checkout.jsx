@@ -11,7 +11,7 @@ import SelectAddressModal from "../components/modals/SelectAddressModal";
 
 const Checkout = () => {
   const user = useSelector((state) => state.user.user);
-
+  const navigator = useNavigate();
   const [discount, setDiscount] = useState(100000);
   const [shipMethod, setShipMethod] = useState("standard");
   const shipMethodList = {
@@ -45,11 +45,9 @@ const Checkout = () => {
   };
 
   const [carts, setCarts] = useState([]);
-
   const getCartFromLocalStorage = () => {
     return JSON.parse(localStorage.getItem("cart")) || [];
   };
-
   useEffect(() => {
     setCarts(getCartFromLocalStorage()) || [];
   }, [localStorage.getItem("cart")]);
@@ -57,7 +55,7 @@ const Checkout = () => {
   const calculateTotalCartPrice = () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const total = cart.reduce((sum, item) => {
-      return sum + item.quantity * item.product.size[item.size].price;
+      return sum + item.quantity * item.product.size?.[item.size]?.price;
     }, 0);
     return total;
   };
@@ -124,21 +122,38 @@ const Checkout = () => {
     setAddressDefault();
   }, [addressList]);
 
-  const handleCheckout = (e) => {
+  const handleCheckout = async (e) => {
     e.preventDefault();
     const priceCheckout = totalPrice + shipMethodList[shipMethod] - discount;
 
-    console.log("user", user._id);
-    console.log("address", address._id);
-    console.log("discount", discount);
-    console.log("priceCheckout", priceCheckout);
-    console.log("totalPrice", totalPrice);
-    console.log("openOrderList", openOrderList);
-    console.log("shipMethod", shipMethod);
-    console.log("shipMethodList", shipMethodList[shipMethod]);
-    console.log("payment", payment);
-  };
+    const data = {
+      orderItem: carts,
+      totalAmount: totalPrice,
+      shippingFee: shipMethodList[shipMethod],
+      discount: discount,
+      priceCheckout: priceCheckout,
+      shippingAddress: address._id,
+      shippingMethod: shipMethod,
+      paymentMethod: payment,
+    };
 
+    await axios
+      .post(SummaryApi.order.url, data, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(function (response) {
+        localStorage.removeItem("cart");
+        navigator("/order-success");
+        toast.success(" thành công!");
+      })
+      .catch(function (error) {
+        toast.error(error?.response?.data?.message);
+      });
+  };
+  // localStorage.removeItem("cart");
   return (
     <div className="mx-auto max-w-6xl px-6 xl:px-0 mt-16 min-h-[70vh] mb-8">
       <h1 className="text-3xl font-semibold mb-4">Checkout</h1>
@@ -320,39 +335,42 @@ const Checkout = () => {
             </div>
           </div>
           {openOrderList && (
-            <div className="w-full flex flex-col gap-2 max-h-[36vh] overflow-y-auto pt-1 pr-4">
-              {carts?.map((cart, i) => (
-                <div className="flex gap-6 items-center" key={i}>
-                  <a href="#" className="relative">
-                    <img
-                      src={cart?.product?.imageUrl?.[0]}
-                      alt="item"
-                      className="w-16 h-16 border border-black/20 object-scale-down cursor-pointer hover:border-primary transition-all"
-                    />
-                    {/* <div className="absolute -top-1 -right-1 rounded-full bg-primary text-xs text-white w-5 h-5 flex items-center justify-center">
+            <div className="w-full flex flex-col gap-2 max-h-[36vh] overflow-y-auto">
+              {carts?.map(
+                (cart, i) =>
+                  cart.product.size[cart.size].quantity > 0 && (
+                    <div className="flex gap-6 items-center" key={i}>
+                      <a href="#" className="relative">
+                        <img
+                          src={cart?.product?.imageUrl?.[0]}
+                          alt="item"
+                          className="w-16 h-16 border border-black/20 object-scale-down cursor-pointer hover:border-primary transition-all"
+                        />
+                        {/* <div className="absolute -top-1 -right-1 rounded-full bg-primary text-xs text-white w-5 h-5 flex items-center justify-center">
                         {cart?.quantity}
                       </div> */}
-                  </a>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <p className="line-clamp-1">
-                        {cart?.product?.productName}
-                      </p>
-                      <p>
-                        {formatPrice(
-                          cart?.product?.size[cart?.size]?.price *
-                            cart?.quantity
-                        )}
-                      </p>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <p>{cart?.size}</p>
+                      </a>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center">
+                          <p className="line-clamp-1">
+                            {cart?.product?.productName}
+                          </p>
+                          <p>
+                            {formatPrice(
+                              cart?.product?.size[cart?.size]?.price *
+                                cart?.quantity
+                            )}
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <p>{cart?.size}</p>
 
-                      <p>x{cart?.quantity}</p>
+                          <p>x{cart?.quantity}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  )
+              )}
             </div>
           )}
           <hr />
