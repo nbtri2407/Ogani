@@ -1,4 +1,10 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { FaHeart } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import Logo from "../assets/img/logo.png";
@@ -22,8 +28,10 @@ import SummaryApi from "../common/apiUrl";
 import { toast } from "react-toastify";
 import DepartmentsList from "./DepartmentsList/DepartmentsList";
 import { IoCart } from "react-icons/io5";
+import Context from "../context";
 
 const Navbar = ({ openCart }) => {
+  const { getUserDetails } = useContext(Context);
   const navigator = useNavigate();
   const user = useSelector((state) => state?.user?.user);
   const [showDepartments, setShowDepartments] = useState(false);
@@ -42,6 +50,7 @@ const Navbar = ({ openCart }) => {
       })
       .then(function (response) {
         toast.success(response.data.message);
+        getUserDetails();
         navigator("/auth");
       })
       .catch(function (error) {
@@ -169,7 +178,7 @@ const Navbar = ({ openCart }) => {
           </div>
           <div className="lg:col-span-3 col-span-12 lg:row-start-1 row-start-2">
             <div className="flex gap-4 lg:justify-end justify-center text-[1.4rem] items-center">
-              <div className="hidden lg:flex gap-2 relative">
+              <div className="hidden lg:flex items-center gap-2 relative">
                 {user ? (
                   <p className="text-[1rem]">{user?.name}</p>
                 ) : (
@@ -180,10 +189,20 @@ const Navbar = ({ openCart }) => {
                     Đăng nhập
                   </Link>
                 )}
-                <FaUser
-                  className="cursor-pointer"
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                />
+                {user?.picture ? (
+                  <img
+                    className="w-7 h-7 rounded-full cursor-pointer"
+                    src={user?.picture}
+                    alt="Rounded avatar"
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                  />
+                ) : (
+                  <FaUser
+                    className="cursor-pointer"
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                  />
+                )}
+
                 {showUserMenu && user && (
                   <motion.ul
                     ref={menuRef}
@@ -193,7 +212,7 @@ const Navbar = ({ openCart }) => {
                     className="absolute top-[140%] z-50 right-0 py-2 w-28 text-[1rem] border bg-white shadow-lg before-arrow"
                   >
                     <li className="px-4 py-0.5 border-slate-100 border-b-1 hover:bg-slate-300 w-full">
-                      <Link to={"#"}>Hồ sơ</Link>
+                      <Link to={"/profile"}>Hồ sơ</Link>
                     </li>
                     <li
                       className="px-4 py-0.5 border-slate-100 border-b-1 cursor-pointer hover:bg-slate-300 w-full"
@@ -265,8 +284,8 @@ const Navbar = ({ openCart }) => {
                 <FaPhone />
               </div>
               <div className="">
-                <p className="text-[1.1rem] font-bold">+65 11.188.888</p>
-                <p className="text-[0.9rem]">hỗ trợ 24/7 time</p>
+                <p className="text-[1.1rem] font-bold">0967456435</p>
+                <p className="text-[0.9rem]">Hỗ trợ 24/7</p>
               </div>
             </div>
           </div>

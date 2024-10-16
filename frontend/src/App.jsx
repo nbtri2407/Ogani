@@ -30,6 +30,27 @@ function App() {
       });
   };
 
+  const getCartFromLocalStorage = () => {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+  };
+
+  const updateCartToDB = async () => {
+    await axios
+      .post(
+        SummaryApi.updateCart.url,
+        {
+          cartItems: getCartFromLocalStorage(),
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then(function (response) {})
+      .catch(function (error) {
+        console.log(error?.response?.data?.message);
+      });
+  };
+
   useEffect(() => {
     getUserDetails();
     // getCountCartProduct();
@@ -37,8 +58,14 @@ function App() {
   const [openCart, setOpenCart] = useState(false);
 
   return (
-    <Context.Provider value={{}}>
-      <Cart onClose={() => setOpenCart(false)} open={openCart} />
+    <Context.Provider value={{ getUserDetails }}>
+      <Cart
+        onClose={() => {
+          updateCartToDB();
+          setOpenCart(false);
+        }}
+        open={openCart}
+      />
       <Navbar openCart={() => setOpenCart(true)} />
       <ToastContainer position="bottom-right" />
       <Outlet />

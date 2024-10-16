@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SummaryApi from "../../common/apiUrl";
 import { toast } from "react-toastify";
+import { GoogleLogin } from "@react-oauth/google";
 
 const SignUpForm = ({ callBack }) => {
   const [data, setData] = useState({
@@ -45,16 +46,40 @@ const SignUpForm = ({ callBack }) => {
       });
   };
 
+  const handleLoginSuccess = async (credentialResponse) => {
+    const { credential } = credentialResponse;
+    await axios
+      .post(
+        SummaryApi.googleLogin.url,
+        {
+          token: credential,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        navigator("/");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="w-full xl:px-40 md:px-32 px-20 py-10">
-      <h1 className="text-[4rem] text-center ">Login</h1>
+      <h1 className="text-[2rem] text-center">Đăng Ký</h1>
       <form
-       className="max-w-sm mx-auto text-start"
+        className="max-w-md p-8 mx-auto text-start bg-white border shadow-xl flex flex-col gap-3"
         onSubmit={handleSignUp}
       >
         <div className="flex flex-col gap-1 w-full">
           <label htmlFor="name" className="text-left pl-1">
-            Name
+            Tên hiển thị
           </label>
           <input
             type="text"
@@ -66,7 +91,7 @@ const SignUpForm = ({ callBack }) => {
         </div>
         <div className="flex flex-col gap-1 w-full">
           <label htmlFor="phone" className="text-left pl-1">
-            Phone
+            Số điện thoại
           </label>
           <input
             type="text"
@@ -76,11 +101,8 @@ const SignUpForm = ({ callBack }) => {
             className="w-full px-4 py-2 bg-slate-100 outline-none border border-slate-300 rounded-md"
           />
         </div>
-        <div className="mb-5">
-          <label
-            htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
+        <div className="flex flex-col gap-1 w-full">
+          <label htmlFor="email" className="text-left pl-1">
             Email
           </label>
           <input
@@ -94,7 +116,7 @@ const SignUpForm = ({ callBack }) => {
         </div>
         <div className="flex flex-col gap-1 w-full">
           <label htmlFor="password" className="text-left pl-1">
-            Password
+            Mật khẩu
           </label>
           <input
             type="password"
@@ -106,7 +128,7 @@ const SignUpForm = ({ callBack }) => {
         </div>
         <div className="flex flex-col gap-1 w-full">
           <label htmlFor="confirmPassword" className="text-left pl-1">
-            Confirm Password
+            Xác nhận mật khẩu
           </label>
           <input
             type="password"
@@ -119,17 +141,32 @@ const SignUpForm = ({ callBack }) => {
         <div className="flex justify-start items-center w-full">
           <p className="text-[1rem] cursor-pointer text-secondary">{error}</p>
         </div>
-        <button className="primary-btn w-full my-4">Sign Up</button>
+        <button className="primary-btn w-full my-2">Đăng ký</button>
         <div className="flex justify-center items-center w-full">
           <p className="text-[1rem]">
-            You have a account?{" "}
+            Bạn đã có tài khoản?{" "}
             <span
               className="text-secondary cursor-pointer hover:underline transition-all"
               onClick={callBack}
             >
-              Login
+              Đăng nhập
             </span>
           </p>
+        </div>
+
+        <div className="inline-flex items-center justify-center w-full">
+          <hr className="w-64 h-px my-4 bg-gray-200 border-0 dark:bg-gray-700" />
+          <span className="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2 dark:text-white dark:bg-gray-900">
+            hoặc
+          </span>
+        </div>
+        <div className="mt-2 w-full flex items-center justify-center">
+          <GoogleLogin
+            onSuccess={handleLoginSuccess}
+            onError={() => {
+              console.log("Login Failed");
+            }}
+          />
         </div>
       </form>
     </div>

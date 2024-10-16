@@ -10,7 +10,8 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import formatPrice from "../../helper/formatPrice";
-import { toast } from "react-toastify";
+import SummaryApi from "../../common/apiUrl";
+import axios from "axios";
 
 const Cart = ({ onClose, open }) => {
   const [carts, setCarts] = useState([]);
@@ -19,6 +20,7 @@ const Cart = ({ onClose, open }) => {
   const getCartFromLocalStorage = () => {
     return JSON.parse(localStorage.getItem("cart")) || [];
   };
+
   useEffect(() => {
     setCarts(getCartFromLocalStorage()) || [];
     calculateTotalCartPrice();
@@ -51,6 +53,10 @@ const Cart = ({ onClose, open }) => {
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     setCarts(getCartFromLocalStorage()) || [];
+    const cartEvent = new CustomEvent("cartChanged", {
+      detail: "newCart",
+    });
+    window.dispatchEvent(cartEvent);
   };
 
   const handleChangeQuantity = (cartItem, size, e) => {
@@ -60,7 +66,6 @@ const Cart = ({ onClose, open }) => {
       updateQtyCart(cartItem, size, qty);
     } else {
       updateQtyCart(cartItem, size, maxQty);
-      toast.error("Tối đa");
     }
   };
 
@@ -75,7 +80,6 @@ const Cart = ({ onClose, open }) => {
       updateQtyCart(cartItem, size, quantity + 1);
     } else {
       updateQtyCart(cartItem, size, maxQty);
-      toast.error("Tối đa");
     }
   };
 
@@ -108,10 +112,7 @@ const Cart = ({ onClose, open }) => {
         );
       }
     } else {
-      console.log("b");
-
       if (existingProductIndex !== -1) {
-        console.log("c");
         cart[existingProductIndex].size = sizeUpdate;
         if (
           cart[existingProductIndex].quantity >
@@ -127,9 +128,7 @@ const Cart = ({ onClose, open }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
     setCarts(getCartFromLocalStorage()) || [];
     removeProductFromCart(cartItem.product, cartItem.size);
-  };
-
-  // console.log(carts);
+  }; 
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
@@ -177,7 +176,7 @@ const Cart = ({ onClose, open }) => {
                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                               <img
                                 alt={cart.product.productName}
-                                src={cart.product.imageUrl[0]}
+                                src={cart?.product?.imageUrl?.[0]}
                                 className="h-full w-full object-cover object-center"
                               />
                             </div>
@@ -278,8 +277,8 @@ const Cart = ({ onClose, open }) => {
                                 </div>
                                 <p className="text-gray-700">
                                   {formatPrice(
-                                    cart.product.size[cart.size].price *
-                                      cart.quantity
+                                    cart?.product?.size[cart?.size]?.price *
+                                      cart?.quantity
                                   )}
                                 </p>
                               </div>
@@ -288,7 +287,7 @@ const Cart = ({ onClose, open }) => {
                                   Phân loại:
                                 </p> */}
                                 <select
-                                  // defaultValue={cart.size}
+                                  value={cart.size}
                                   onChange={(e) => handleChangeSize(cart, e)}
                                   className="h-8 text-xs rounded-lg text-gray-700 outline-none border-gray-300 cursor-pointer"
                                 >
@@ -297,12 +296,12 @@ const Cart = ({ onClose, open }) => {
                                       key={size}
                                       value={size}
                                       disabled={
-                                        cart.product.size[size].quantity > 0
+                                        cart?.product.size[size].quantity > 0
                                           ? false
                                           : true
                                       }
                                       selected={
-                                        cart.size === size ? true : false
+                                        cart?.size === size ? true : false
                                       }
                                     >
                                       {size}
@@ -310,7 +309,7 @@ const Cart = ({ onClose, open }) => {
                                   ))}
                                 </select>
                                 <p className="text-gray-700">
-                                  Kho: {cart.product.size[cart.size].quantity}
+                                  Kho: {cart?.product.size[cart.size].quantity}
                                 </p>
                                 <div className="flex">
                                   <button
@@ -345,7 +344,7 @@ const Cart = ({ onClose, open }) => {
                   </p>
                   <div className="mt-6">
                     <a
-                      href="#"
+                      href="/checkout"
                       className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                     >
                       Thanh toán

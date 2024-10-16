@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const userModel = new Schema(
   {
+    googleId: {
+      type: String,
+      unique: true,
+    },
     name: String,
     email: {
       type: String,
@@ -11,6 +15,7 @@ const userModel = new Schema(
     },
     phone: String,
     address: String,
+    picture: String,
     password: String,
     role: String,
     wishList: [

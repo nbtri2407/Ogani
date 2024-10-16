@@ -6,6 +6,8 @@ import LoginSignup from "../pages/LoginSignup";
 import Test from "../pages/Test";
 import PageNotFound from "../pages/PageNotFound";
 import ProductDetails from "../pages/ProductDetails";
+import Checkout from "../pages/Checkout";
+import Profile from "../pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -32,12 +34,21 @@ const router = createBrowserRouter([
         path: "*",
         element: <PageNotFound />,
       },
+      {
+        path: "checkout",
+        element: <Checkout />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+      {
+        path: "/auth",
+        element: <LoginSignup />,
+      },
     ],
   },
-  {
-    path: "/auth",
-    element: <LoginSignup />,
-  },
+
   {
     path: "*",
     element: <PageNotFound />,

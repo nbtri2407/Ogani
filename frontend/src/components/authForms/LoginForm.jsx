@@ -1,21 +1,54 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
 import axios from "axios";
 import { toast } from "react-toastify";
 import SummaryApi from "../../common/apiUrl";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import Context from "../../context";
 
 const LoginForm = ({ callBack }) => {
+  const { getUserDetails } = useContext(Context);
   const [data, setData] = useState({
     email: "Tri123@gmail.com",
     password: "123456",
   });
   const [error, setError] = useState("");
   const navigator = useNavigate();
+  const goBack = () => {
+    // navigator(-1);
+    navigator("/checkout");
+  };
+  const getCartFromLocalStorage = () => {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+  };
+
+  const mergeCart = async () => {
+    await axios
+      .post(
+        SummaryApi.mergeCart.url,
+        {
+          cartItems: getCartFromLocalStorage(),
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then(function (response) {
+        localStorage.removeItem("cart");
+        localStorage.setItem("cart", JSON.stringify(response?.data?.data));
+        const cartEvent = new CustomEvent("cartChanged", {
+          detail: "newCart",
+        });
+        window.dispatchEvent(cartEvent);
+      })
+      .catch(function (error) {
+        console.log(error?.response?.data?.message);
+      });
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     await axios
       .post(SummaryApi.login.url, data, {
         withCredentials: true,
@@ -26,8 +59,14 @@ const LoginForm = ({ callBack }) => {
       .then(function (response) {
         if (response.data.role === "GENERAL") {
           toast.success(response.data.message);
+          mergeCart();
+          const cartEvent = new CustomEvent("cartChanged", {
+            detail: "newCart",
+          });
+          window.dispatchEvent(cartEvent);
           setError("");
-          navigator("/");
+          getUserDetails();
+          goBack();
         }
       })
       .catch(function (error) {
@@ -46,10 +85,38 @@ const LoginForm = ({ callBack }) => {
     });
   };
 
+  const handleLoginSuccess = async (credentialResponse) => {
+    const { credential } = credentialResponse;
+    await axios
+      .post(
+        SummaryApi.googleLogin.url,
+        {
+          token: credential,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(function (response) {
+        mergeCart();
+        getUserDetails();
+        goBack();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="w-full xl:px-40 md:px-32 px-20 py-10">
       <h1 className="text-[2rem] text-center ">Đăng nhập</h1>
-      <form onSubmit={handleLogin} className="max-w-sm mx-auto text-start">
+      <form
+        onSubmit={handleLogin}
+        className="max-w-md p-8 mx-auto text-start bg-white border shadow-xl"
+      >
         <div className="mb-5">
           <label
             htmlFor="email"
@@ -99,7 +166,7 @@ const LoginForm = ({ callBack }) => {
           Đăng nhập
         </button>
 
-        <div className="flex justify-start items-center w-full">
+        <div className="flex justify-start items-center w-full mt-2">
           <p className="text-[1rem]">
             Bạn chưa có tài khoản?{" "}
             <span
@@ -110,54 +177,22 @@ const LoginForm = ({ callBack }) => {
             </span>
           </p>
         </div>
+
+        <div className="inline-flex items-center justify-center w-full">
+          <hr className="w-64 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+          <span className="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2 dark:text-white dark:bg-gray-900">
+            hoặc
+          </span>
+        </div>
+        <div className="mt-2 w-full flex items-center justify-center">
+          <GoogleLogin
+            onSuccess={handleLoginSuccess}
+            onError={() => {
+              console.log("Login Failed");
+            }}
+          />
+        </div>
       </form>
-      {/* <form
-        className="w-full flex flex-col gap-6 items-start text-[1.6rem]"
-        onSubmit={handleLogin}
-      >
-        <div className="flex flex-col gap-2 w-full">
-          <label htmlFor="email" className="text-left">
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={data.email}
-            onChange={(e) => handleOnChange(e)}
-            className="w-full px-4 py-2 bg-slate-100 outline-none border border-slate-300 rounded-md"
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full">
-          <label htmlFor="name" className="text-left">
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            value={data.password}
-            onChange={(e) => handleOnChange(e)}
-            className="w-full px-4 py-2 bg-slate-100 outline-none border border-slate-300 rounded-md"
-          />
-        </div>
-        <div className="flex justify-between items-center w-full">
-          <p className="text-[1rem] cursor-pointer text-secondary">{error}</p>
-          <p className="text-[1rem] cursor-pointer underline hover:text-secondary">
-            Forgot password?
-          </p>
-        </div>
-        <button className="primary-btn w-full">Login</button>
-        <div className="flex justify-center items-center w-full">
-          <p className="text-[1rem]">
-            Not a member?{" "}
-            <span
-              className="text-secondary cursor-pointer hover:underline transition-all"
-              onClick={callBack}
-            >
-              Sign Up
-            </span>
-          </p>
-        </div>
-      </form> */}
     </div>
   );
 };

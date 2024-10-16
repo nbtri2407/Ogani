@@ -19,7 +19,9 @@ app.use(cookieParser());
 app.use("/api", router);
 
 const port = 5050;
-connectDB().then(() => {});
+connectDB().then(() => {
+  
+});
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

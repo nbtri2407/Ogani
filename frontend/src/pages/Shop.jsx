@@ -20,6 +20,7 @@ import {
 import SummaryApi from "../common/apiUrl";
 import axios from "axios";
 import FeaturedProductCard from "../components/FeaturedSection/FeaturedProductCard";
+import { toast } from "react-toastify";
 
 const Shop = () => {
   const sortOptions = [
@@ -507,7 +508,7 @@ const Shop = () => {
                             }
                             id={`filter-mobilec-${i}`}
                             type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            className="h-4 w-4 rounded border-gray-300"
                           />
                           <label
                             htmlFor={`filter-mobilec-${i}`}
@@ -521,39 +522,48 @@ const Shop = () => {
                   </DisclosurePanel>
                 </Disclosure>
               </div>
-
               {/* Product grid */}
-              <div className="lg:col-span-3 grid md:grid-cols-3 grid-cols-2 gap-4">
-                {paginatedData?.map((p, i) => {
-                  return (
-                    <div className="col-span-1" key={i}>
-                      <FeaturedProductCard product={p} key={i} />
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="lg:col-span-1"></div>
-              <div className="lg:col-span-3">
-                <ReactPaginate
-                  previousLabel={"Trước"}
-                  nextLabel={"Sau"}
-                  breakLabel={"..."}
-                  pageCount={totalPages}
-                  marginPagesDisplayed={2}
-                  pageRangeDisplayed={3}
-                  onPageChange={handlePageClick}
-                  containerClassName={"flex items-center justify-center gap-1"}
-                  pageClassName={"px-3 py-1 border border-blue-400 "}
-                  pageLinkClassName={"page-link"}
-                  previousClassName={"px-3 py-1 border border-blue-400"}
-                  previousLinkClassName={"page-link"}
-                  nextClassName={"px-3 py-1 border border-blue-400 "}
-                  nextLinkClassName={"page-link"}
-                  breakClassName={"px-3 py-1 border border-blue-400 "}
-                  breakLinkClassName={"page-link"}
-                  activeClassName={"bg-blue-400 text-white"}
-                />
-              </div>
+              {paginatedData.length > 0 ? (
+                <>
+                  <div className="lg:col-span-3 grid md:grid-cols-3 grid-cols-2 gap-4">
+                    {paginatedData?.map((p, i) => {
+                      return (
+                        <div className="col-span-1" key={i}>
+                          <FeaturedProductCard product={p} key={i} />
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="lg:col-span-1"></div>
+                  <div className="lg:col-span-3">
+                    <ReactPaginate
+                      previousLabel={"Trước"}
+                      nextLabel={"Sau"}
+                      breakLabel={"..."}
+                      pageCount={totalPages}
+                      marginPagesDisplayed={2}
+                      pageRangeDisplayed={3}
+                      onPageChange={handlePageClick}
+                      containerClassName={
+                        "flex items-center justify-center gap-1"
+                      }
+                      pageClassName={"px-3 py-1 border border-blue-400 "}
+                      pageLinkClassName={"page-link"}
+                      previousClassName={"px-3 py-1 border border-blue-400"}
+                      previousLinkClassName={"page-link"}
+                      nextClassName={"px-3 py-1 border border-blue-400 "}
+                      nextLinkClassName={"page-link"}
+                      breakClassName={"px-3 py-1 border border-blue-400 "}
+                      breakLinkClassName={"page-link"}
+                      activeClassName={"bg-blue-400 text-white"}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="lg:col-span-3">
+                  <p className="text-center">Không tìm thấy sản phẩm</p>
+                </div>
+              )}
             </div>
           </section>
         </main>

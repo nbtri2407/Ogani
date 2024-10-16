@@ -6,11 +6,17 @@ const SummaryApi = {
   login: {
     url: `${backendDomain}/login`,
   },
+  googleLogin: {
+    url: `${backendDomain}/google-login`,
+  },
   getUserDetails: {
     url: `${backendDomain}/get-user`,
   },
   userLogout: {
-    url: `${backendDomain}/user-logout`
+    url: `${backendDomain}/user-logout`,
+  },
+  updateUser: {
+    url: `${backendDomain}/update-user`,
   },
   getAllCategory: {
     url: `${backendDomain}/get-all-categories`,
@@ -21,6 +27,18 @@ const SummaryApi = {
   getProductDetail: {
     url: `${backendDomain}/product-details`,
   },
+  updateCart: {
+    url: `${backendDomain}/update-cart`,
+  },
+  mergeCart: {
+    url: `${backendDomain}/merge-cart`,
+  },
+  address: {
+    url: `${backendDomain}/address`,
+  },
+  setDefaultAddress: {
+    url: `${backendDomain}/default-address`,
+  },
 };
-// product-details
+//default-address
 export default SummaryApi;

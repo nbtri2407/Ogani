@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const cartItemModel = new mongoose.Schema(
+const orderDetailModel = new mongoose.Schema(
   {
-    user: {
+    order: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "order",
     },
     product: {
       type: mongoose.Schema.Types.ObjectId,
@@ -23,4 +23,4 @@ const cartItemModel = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("cartItem", cartItemModel);
+module.exports = mongoose.model("orderDetail", orderDetailModel);
