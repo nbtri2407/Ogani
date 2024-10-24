@@ -1,7 +1,7 @@
 import "./App.css";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useDispatch } from "react-redux";
 import Context from "./context";
@@ -16,7 +16,7 @@ import Sidebar from "./components/Sidebar";
 
 function App() {
   const dispatch = useDispatch();
-
+  const navigator = useNavigate();
   const getUserDetails = async () => {
     await axios
       .get(SummaryApi.getUserDetails.url, {
@@ -26,9 +26,11 @@ function App() {
         dispatch(setUserDetails(response?.data?.data));
       })
       .catch(function (error) {
+        navigator("/login");
         console.log("error", error);
       });
   };
+  
 
   useEffect(() => {
     getUserDetails();

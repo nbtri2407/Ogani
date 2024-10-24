@@ -12,6 +12,14 @@ const productModel = new Schema(
       min: 0,
       max: 100,
     },
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    sold: {
+      type: Number,
+      default: 0,
+    },
     size: {
       "100G": {
         quantity: { type: Number, min: 0, required: true },

@@ -2,17 +2,19 @@ import React, { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { MdArrowForwardIos } from "react-icons/md";
 import formatPrice from "../helper/formatPrice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import SummaryApi from "../common/apiUrl";
 import SelectAddressModal from "../components/modals/SelectAddressModal";
+import UpdateAddressModal from "../components/modals/UpdateAddressModal";
 
 const Checkout = () => {
   const user = useSelector((state) => state.user.user);
   const navigator = useNavigate();
-  const [discount, setDiscount] = useState(100000);
+  const location = useLocation();
+  const [discount, setDiscount] = useState(0);
   const [shipMethod, setShipMethod] = useState("standard");
   const shipMethodList = {
     standard: 50000,
@@ -55,7 +57,8 @@ const Checkout = () => {
   const calculateTotalCartPrice = () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const total = cart.reduce((sum, item) => {
-      return sum + item.quantity * item.product.size?.[item.size]?.price;
+      if (item.product.size[item.size].quantity > 0)
+        return sum + item.quantity * item.product.size?.[item.size]?.price;
     }, 0);
     return total;
   };
@@ -122,9 +125,18 @@ const Checkout = () => {
     setAddressDefault();
   }, [addressList]);
 
+  const redirectToExternalSite = (link) => {
+    window.location.replace(link);
+  };
+
+  const [isDisabled, setIsDisabled] = useState(false);
   const handleCheckout = async (e) => {
     e.preventDefault();
+    if (isDisabled) return; 
+    setIsDisabled(true);
+
     const priceCheckout = totalPrice + shipMethodList[shipMethod] - discount;
+    console.log(priceCheckout);
 
     const data = {
       orderItem: carts,
@@ -132,28 +144,65 @@ const Checkout = () => {
       shippingFee: shipMethodList[shipMethod],
       discount: discount,
       priceCheckout: priceCheckout,
-      shippingAddress: address._id,
+      address: address._id,
       shippingMethod: shipMethod,
       paymentMethod: payment,
     };
 
-    await axios
-      .post(SummaryApi.order.url, data, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(function (response) {
-        localStorage.removeItem("cart");
-        navigator("/order-success");
-        toast.success(" thành công!");
-      })
-      .catch(function (error) {
-        toast.error(error?.response?.data?.message);
-      });
+    if (payment == "cod") {
+      await axios
+        .post(SummaryApi.order.url, data, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then(function (response) {
+          localStorage.removeItem("cart");
+          navigator("/order-success");
+          toast.success(" thành công!");
+        })
+        .catch(function (error) {
+          toast.error(error?.response?.data?.message);
+        });
+    }
+
+    if (payment == "zalo") {
+      await axios
+        .post(SummaryApi.payment.url, data, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then(function (response) {
+          localStorage.removeItem("cart");
+          redirectToExternalSite(response.data.data.order_url);
+        })
+        .catch(function (error) {
+          console.log(error);
+          toast.error(error?.response?.data?.message);
+        });
+    }
+
+    setTimeout(() => {
+      setIsDisabled(false); 
+    }, 3000);
   };
-  // localStorage.removeItem("cart");
+
+  const handleLoginRedirect = () => {
+    // Lưu trữ đường dẫn hiện tại trong state khi chuyển sang trang đăng nhập
+    navigator("/auth", { state: { from: location } });
+  };
+
+  const [addressUpdate, setAddressUpdate] = useState({});
+  const [openModalUpdate, setOpenModalUpdate] = useState(false);
+
+  const handleEditAddress = (a) => {
+    setAddressUpdate(a);
+    setOpenModalUpdate(true);
+  };
+
   return (
     <div className="mx-auto max-w-6xl px-6 xl:px-0 mt-16 min-h-[70vh] mb-8">
       <h1 className="text-3xl font-semibold mb-4">Checkout</h1>
@@ -162,7 +211,7 @@ const Checkout = () => {
         {/*  =-- */}
         <div className="col-span-1">
           {/* address */}
-          <div className="col-span-1 flex flex-col gap-4 mt-4">
+          <div className="col-span-1 flex flex-col gap-4">
             <h1 className="text-xl w-full font-bold">Thông tin vận chuyển</h1>
             <div className="flex p-6 w-full border border-black/30 rounded-md">
               {user ? (
@@ -179,15 +228,25 @@ const Checkout = () => {
                         {address?.province?.name}, {address?.district?.name},{" "}
                         {address?.ward?.name}
                       </p>
-                      {address.isDefault && (
+                      {address.isDefault ? (
                         <p className="text-red-500 border border-red-500 max-w-fit px-2">
                           Mặc định
                         </p>
+                      ) : (
+                        <div className="">
+                          <button
+                            onClick={() => handleSetDefaultAddress(address._id)}
+                            className="text-red-500 hover:underline"
+                          >
+                            Chọn làm địa chỉ mặc định
+                          </button>
+                        </div>
                       )}
                     </div>
                     <div className="flex flex-col justify-between">
                       <div className="flex flex-col items-end">
                         <button
+                          onClick={() => handleEditAddress(address)}
                           type="button"
                           className="text-primary hover:underline"
                         >
@@ -201,16 +260,9 @@ const Checkout = () => {
                           Thay đổi
                         </button>
                       </div>
-                      {!address.isDefault && (
-                        <div className="">
-                          <button
-                            onClick={() => handleSetDefaultAddress(address._id)}
-                            className="hover:underline"
-                          >
-                            Đặt mặc định
-                          </button>
-                        </div>
-                      )}
+                      {/* {!address.isDefault && (
+                        
+                      )} */}
                     </div>
                   </div>
                 ) : (
@@ -219,20 +271,20 @@ const Checkout = () => {
               ) : (
                 <div className="w-full">
                   <p className="text-center">
-                    <a
-                      href="/auth"
+                    <button
+                      onClick={handleLoginRedirect}
                       className="text-primary hover:underline font-bold"
                     >
                       Đăng nhập
-                    </a>{" "}
+                    </button>{" "}
                     để chọn địa chỉ giao hàng
                   </p>
                 </div>
               )}
             </div>
           </div>
-
           {/* address */}
+
           <div className="col-span-1 flex flex-col gap-4 mt-4">
             <h1 className="text-xl w-full font-bold">Phương thức vận chuyển</h1>
             <div className="w-full border border-black/30 rounded-md p-6 flex flex-col justify-center gap-4">
@@ -299,18 +351,32 @@ const Checkout = () => {
                   onChange={handleOnChecedPayment}
                   id="payment1"
                 />
-                <label htmlFor="payment1">Thanh toán khi nhận hàng (COD)</label>
+                <label
+                  htmlFor="payment1"
+                  className={`cursor-pointer ${
+                    payment === "cod" ? "font-bold" : ""
+                  }`}
+                >
+                  Thanh toán khi nhận hàng (COD)
+                </label>
               </div>
               <div className="w-full flex gap-2 items-center">
                 <input
                   type="radio"
                   name="payment"
-                  value={"paypal"}
-                  checked={payment === "paypal"}
+                  value={"zalo"}
+                  checked={payment === "zalo"}
                   onChange={handleOnChecedPayment}
                   id="payment2"
                 />
-                <label htmlFor="payment2">Thanh toán chuyển khoản</label>
+                <label
+                  htmlFor="payment2"
+                  className={`cursor-pointer ${
+                    payment === "zalo" ? "font-bold" : ""
+                  }`}
+                >
+                  Thanh toán trực tuyến (ZaloPay)
+                </label>
               </div>
             </div>
           </div>
@@ -335,7 +401,7 @@ const Checkout = () => {
             </div>
           </div>
           {openOrderList && (
-            <div className="w-full flex flex-col gap-2 max-h-[36vh] overflow-y-auto">
+            <div className="w-full flex flex-col gap-2 max-h-[30vh] overflow-y-auto">
               {carts?.map(
                 (cart, i) =>
                   cart.product.size[cart.size].quantity > 0 && (
@@ -418,15 +484,18 @@ const Checkout = () => {
               type="button"
               className="primary-btn w-full mt-2"
             >
-              Đặt hàng
+              {payment === "cod" ? "Đặt hàng" : "Thanh toán"}
             </button>
           ) : (
-            <a href="/auth" className="primary-btn w-full mt-2 text-center">
+            <button
+              onClick={handleLoginRedirect}
+              className="primary-btn w-full mt-2 text-center"
+            >
               Đăng nhập
-            </a>
+            </button>
           )}
         </div>
-        {/* </div> */}
+        {/* </Product> */}
       </div>
 
       {/* Modal */}
@@ -437,6 +506,15 @@ const Checkout = () => {
         onClose={() => setOpenSelectAddress(false)}
         callBack={(a) => {
           setAddress(a);
+        }}
+      />
+
+      <UpdateAddressModal
+        addressUpdate={addressUpdate}
+        open={openModalUpdate}
+        onClose={() => setOpenModalUpdate(false)}
+        callBack={() => {
+          getAllAddress();
         }}
       />
       {/* Modal */}

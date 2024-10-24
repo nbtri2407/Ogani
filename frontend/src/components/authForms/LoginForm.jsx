@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -15,8 +15,10 @@ const LoginForm = ({ callBack }) => {
   });
   const [error, setError] = useState("");
   const navigator = useNavigate();
+  const location = useLocation();
   const goBack = () => {
-    navigator(-1);
+    const from = location.state?.from?.pathname || "/";
+    navigator(from);
     // navigator("/checkout");
   };
   const getCartFromLocalStorage = () => {

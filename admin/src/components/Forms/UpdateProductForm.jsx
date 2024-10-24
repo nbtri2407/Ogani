@@ -169,7 +169,7 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
               <div className="grid sm:grid-cols-2 grid-cols-1 gap-2">
                 <div className="flex flex-col gap-1 col-span-1">
                   <label
-                    for="default-input"
+                    htmlFor="default-input"
                     className="block text-sm font-medium text-gray-900 dark:text-white"
                   >
                     Tên Sản Phẩm
@@ -215,7 +215,7 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
                 <h3 className="col-span-1">Phân loại</h3>
                 <div className="flex items-center gap-2 col-span-1">
                   <label
-                    for="small-input-100G"
+                    htmlFor="small-input-100G"
                     className="block text-sm font-bold text-black min-w-10"
                   >
                     100G
@@ -245,7 +245,7 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
                 </div>
                 <div className="flex items-center gap-2 col-span-1">
                   <label
-                    for="small-input-500G"
+                    htmlFor="small-input-500G"
                     className="block text-sm font-bold text-black"
                   >
                     500G
@@ -276,7 +276,7 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
 
                 <div className="flex items-center gap-2 col-span-1">
                   <label
-                    for="small-input-1kg"
+                    htmlFor="small-input-1kg"
                     className="block text-sm font-bold text-black min-w-10"
                   >
                     1KG
@@ -306,7 +306,7 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
                 </div>
                 <div className="flex items-center gap-2 col-span-1">
                   <label
-                    for="small-input-5kg"
+                    htmlFor="small-input-5kg"
                     className="block text-sm font-bold text-black min-w-10"
                   >
                     5KG
@@ -374,7 +374,7 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
                   type="text"
                   name="description"
                   id="description"
-                  spellcheck="false"
+                  spellCheck="false"
                   value={data?.description}
                   onChange={handleChange}
                   required

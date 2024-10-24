@@ -24,6 +24,18 @@ const getAllAddress = require("../controllers/address/getAllAddress");
 const setDefaultAddress = require("../controllers/address/setDefaultAddress");
 const updateAddress = require("../controllers/address/updateAddress");
 const createOrder = require("../controllers/order/createOrder");
+const payment = require("../controllers/payment/payment");
+const callBackPayment = require("../controllers/payment/callbackPayment");
+const checkPayment = require("../controllers/payment/checkPayment");
+const getOrder = require("../controllers/order/getOrder");
+const retryPayment = require("../controllers/payment/retryPayment ");
+const getOrderDetails = require("../controllers/order/getOrderDetails");
+const updatePaymentOrder = require("../controllers/order/updatePaymentOrder");
+const updateStatusOrder = require("../controllers/order/updateStatusOrder");
+const cancelOrder = require("../controllers/order/cancelOrder");
+const refundPayment = require("../controllers/payment/refundPayment");
+const deleteAddress = require("../controllers/address/deleteAddress");
+const getAllOrder = require("../controllers/order/getAllOrder");
 const router = express.Router();
 
 router.post("/login", login);
@@ -54,10 +66,23 @@ router.get("/get-cart", authToken, getCart);
 router.get("/address", authToken, getAllAddress);
 router.post("/address", authToken, addAddress);
 router.put("/address", authToken, updateAddress);
-router.delete("/address", authToken, addAddress);
+router.patch("/address", authToken, deleteAddress);
 router.post("/default-address", authToken, setDefaultAddress);
 
+router.get("/order", authToken, getOrder);
+router.get("/all-order", authToken, getAllOrder);
+router.get("/order/:orderId", authToken, getOrderDetails);
 router.post("/order", authToken, createOrder);
+router.put("/order", authToken, updatePaymentOrder);
+router.patch("/order", authToken, updateStatusOrder);
+router.post("/cancel-order", authToken, cancelOrder);
 
-// setDefaultAddress
+router.post("/payment", authToken, payment);
+router.post("/callback", callBackPayment);
+router.post("/check-status-order", authToken, checkPayment);
+
+router.post("/retryPayment", authToken, retryPayment);
+router.post("/refundPayment", authToken, refundPayment);
+
+// refundPayment
 module.exports = router;

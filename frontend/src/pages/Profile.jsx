@@ -1,9 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UserInfoTab from "../components/ProfileTab/UserInfoTab";
 import AddressTab from "../components/ProfileTab/AddressTab";
+import OrderTab from "../components/ProfileTab/OrderTab";
+import axios from "axios";
+import SummaryApi from "../common/apiUrl";
 
 const Profile = () => {
   const [tab, setTab] = useState(0);
+
+  const [hash, setHash] = useState("");
+
+  useEffect(() => {
+    // Lấy giá trị hash từ URL
+    const currentHash = window.location.hash.split("?")[0];
+    setHash(currentHash);
+    // setHash(window.location.hash);
+  }, []); 
+
+  useEffect(() => {
+    if (hash == "#info") setTab(0);
+    if (hash == "#order") setTab(1);
+    if (hash == "#address") setTab(2);
+  }, [hash]);
+ 
 
   return (
     <div className="mx-auto max-w-6xl px-6 xl:px-0 mt-16">
@@ -17,94 +36,65 @@ const Profile = () => {
           role="tablist"
         >
           <li className="me-2" role="presentation">
-            <button
-              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-primary hover:border-primary ${
-                tab === 0 ? "text-primary border-primary font-bold" : ""
-              }`}
-              id="profile-styled-tab"
-              data-tabs-target="#styled-profile"
-              type="button"
-              role="tab"
-              aria-controls="profile"
-              aria-selected="false"
-              onClick={() => setTab(0)}
-            >
-              Thông tin tài khoản
-            </button>
+            <a href="#info">
+              <button
+                className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-primary hover:border-primary ${
+                  tab === 0 ? "text-primary border-primary font-bold" : ""
+                }`}
+                id="profile-styled-tab"
+                data-tabs-target="#styled-profile"
+                type="button"
+                role="tab"
+                aria-controls="profile"
+                aria-selected="false"
+                onClick={() => setTab(0)}
+              >
+                Thông tin tài khoản
+              </button>
+            </a>
           </li>
           <li className="me-2" role="presentation">
-            <button
-              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-primary hover:border-primary ${
-                tab === 1 ? "text-primary border-primary font-bold" : ""
-              }`}
-              id="dashboard-styled-tab"
-              data-tabs-target="#styled-dashboard"
-              type="button"
-              role="tab"
-              aria-controls="dashboard"
-              aria-selected="false"
-              onClick={() => setTab(1)}
-            >
-              Đơn hàng
-            </button>
+            <a href="#order">
+              <button
+                className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-primary hover:border-primary ${
+                  tab === 1 ? "text-primary border-primary font-bold" : ""
+                }`}
+                id="dashboard-styled-tab"
+                data-tabs-target="#styled-dashboard"
+                type="button"
+                role="tab"
+                aria-controls="dashboard"
+                aria-selected="false"
+                onClick={() => setTab(1)}
+              >
+                Đơn hàng
+              </button>
+            </a>
           </li>
           <li className="me-2" role="presentation">
-            <button
-              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-primary hover:border-primary ${
-                tab === 2 ? "text-primary border-primary font-bold" : ""
-              }`}
-              id="settings-styled-tab"
-              data-tabs-target="#styled-settings"
-              type="button"
-              role="tab"
-              aria-controls="settings"
-              aria-selected="false"
-              onClick={() => setTab(2)}
-            >
-              Sổ địa chỉ
-            </button>
+            <a href="#address">
+              <button
+                className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-primary hover:border-primary ${
+                  tab === 2 ? "text-primary border-primary font-bold" : ""
+                }`}
+                id="settings-styled-tab"
+                data-tabs-target="#styled-settings"
+                type="button"
+                role="tab"
+                aria-controls="settings"
+                aria-selected="false"
+                onClick={() => setTab(2)}
+              >
+                Sổ địa chỉ
+              </button>
+            </a>
           </li>
         </ul>
       </div>
       <div id="default-styled-tab-content">
         {tab === 0 && <UserInfoTab />}
-        {tab === 1 && (
-          <div
-            className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
-            id="styled-dashboard"
-            role="tabpanel"
-            aria-labelledby="dashboard-tab"
-          >
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              This is some placeholder content the{" "}
-              <strong className="font-medium text-gray-800 dark:text-white">
-                Dashboard tab's associated content
-              </strong>
-              . Clicking another tab will toggle the visibility of this one for
-              the next. The tab JavaScript swaps classes to control the content
-              visibility and styling.
-            </p>
-          </div>
-        )}
         {tab === 2 && <AddressTab />}
-        {tab === 3 && (
-          <div
-            className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
-            id="styled-contacts"
-            role="tabpanel"
-            aria-labelledby="contacts-tab"
-          >
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              This is some placeholder content the{" "}
-              <strong className="font-medium text-gray-800 dark:text-white">
-                Contacts tab's associated content
-              </strong>
-              . Clicking another tab will toggle the visibility of this one for
-              the next. The tab JavaScript swaps classes to control the content
-              visibility and styling.
-            </p>
-          </div>
-        )}
+        {tab === 1 && <OrderTab />}
       </div>
     </div>
   );

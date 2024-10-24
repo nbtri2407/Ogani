@@ -76,7 +76,7 @@ const Users = () => {
                   <td className="px-6 py-4">{user?.phone}</td>
                   <td className="px-6 py-4">{user?.address}</td>
                   <td className="px-6 py-4">
-                    {moment(user?.createdAt).format("LLL")}
+                    {moment(user?.createdAt).format("MM/DD/YYYY h:mm A")}
                   </td>
                   <td className="px-6 py-4">
                     <button

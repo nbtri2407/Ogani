@@ -11,7 +11,7 @@ async function createOrder(req, res) {
       shippingFee,
       discount,
       priceCheckout,
-      shippingAddress,
+      address,
       shippingMethod,
       paymentMethod,
     } = req.body;
@@ -22,19 +22,17 @@ async function createOrder(req, res) {
       shippingFee,
       discount,
       priceCheckout,
-      shippingAddress,
+      address,
+      paymentStatus: "Thanh toán khi nhận hàng",
       shippingMethod,
       paymentMethod,
     });
 
     for (const item of orderItem) {
       if (!(item.product.size[item.size].quantity > 0)) {
-        return res
-          .status(400)
-          .json({
-            message:
-              "Có sản phẩm không đủ hàng. Vui lòng cập nhật lại giỏ hàng",
-          });
+        return res.status(400).json({
+          message: "Có sản phẩm không đủ hàng. Vui lòng cập nhật lại giỏ hàng",
+        });
       }
     }
 
@@ -47,6 +45,7 @@ async function createOrder(req, res) {
         }
 
         product.size[item.size].quantity -= item.quantity;
+        product.sold += 1;
         await product.save();
 
         await orderDetailModel.create({

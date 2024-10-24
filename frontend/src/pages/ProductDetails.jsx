@@ -295,7 +295,7 @@ const ProductDetails = () => {
           </div>
 
           <div className="mt-6 flex gap-2">
-            <div className="relative flex items-center max-w-[8rem]">
+            <div className="relative flex items-center max-w-[9rem]">
               <button
                 type="button"
                 onClick={handleSubQuantity}

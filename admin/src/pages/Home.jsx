@@ -7,7 +7,7 @@ const Home = () => {
   console.log(user);
 
   const navigator = useNavigate();
-  if (!user || user.role !== "ADMIN") {
+  if (!user || user.role !== "ADMIN" || user == null) {
     navigator("/login");
   }
   return <div className="">Home</div>;

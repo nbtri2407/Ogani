@@ -4,14 +4,19 @@ import SummaryApi from "../../common/apiUrl";
 import axios from "axios";
 import { toast } from "react-toastify";
 import UpdateAddressModal from "../modals/UpdateAddressModal";
+import DeleteAddressModal from "../modals/DeleteAddressModal";
+import ModalDelete from "../modals/ModalDelete";
 
 const AddressTab = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
+  const [openModalDelete, setOpenModalDelete] = useState(false);
   const [address, setAddress] = useState([]);
   const [addressUpdate, setAddressUpdate] = useState({});
+  const [addressDelete, setAddressDelete] = useState("");
 
-  const fetchAllAddress = async () => {
+  const fetchAllAddress = async () => { 
+    
     await axios
       .get(SummaryApi.address.url, {
         withCredentials: true,
@@ -51,6 +56,29 @@ const AddressTab = () => {
       });
   };
 
+  const handleDeleteAddress = async (addressId) => {
+    await axios
+      .patch(
+        SummaryApi.address.url,
+        {
+          addressId,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(function (response) {
+        fetchAllAddress();
+        toast.success("Đã xoá địa chỉ!");
+      })
+      .catch(function (error) {
+        console.log(error?.response?.data?.message);
+      });
+  };
+
   return (
     <div className="flex justify-center p-4 bg-gray-100">
       <div className="grid grid-cols-1 gap-4 border p-4 ">
@@ -79,6 +107,7 @@ const AddressTab = () => {
                   <div className="flex flex-col justify-start gap-2">
                     <div className="flex justify-end">
                       <button
+                        type="button"
                         onClick={() => {
                           setAddressUpdate(a);
                           setOpenModalUpdate(true);
@@ -87,7 +116,14 @@ const AddressTab = () => {
                       >
                         Cập nhật
                       </button>
-                      <button className="text-red-500 hover:underline">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAddressDelete(a._id);
+                          setOpenModalDelete(true);
+                        }}
+                        className="text-red-500 hover:underline"
+                      >
                         Xoá
                       </button>
                     </div>
@@ -130,6 +166,13 @@ const AddressTab = () => {
         open={openModalUpdate}
         onClose={() => setOpenModalUpdate(false)}
         callBack={() => fetchAllAddress()}
+      />
+
+      <ModalDelete
+        open={openModalDelete}
+        onClose={() => setOpenModalDelete(false)}
+        callBack={() => handleDeleteAddress(addressDelete)}
+        message={"Bạn chắc chắn muốn xoá địa chỉ này này?"}
       />
     </div>
   );

@@ -63,7 +63,7 @@ const Cart = ({ onClose, open }) => {
   };
 
   const handleChangeQuantity = (cartItem, size, e) => {
-    const qty = +e.target.value; 
+    const qty = +e.target.value;
     const maxQty = cartItem.size[size].quantity;
     if (qty < maxQty) {
       updateQtyCart(cartItem, size, qty);
@@ -131,8 +131,7 @@ const Cart = ({ onClose, open }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
     setCarts(getCartFromLocalStorage()) || [];
     removeProductFromCart(cartItem.product, cartItem.size);
-  };
-
+  }; 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <DialogBackdrop
@@ -351,14 +350,25 @@ const Cart = ({ onClose, open }) => {
                   <p className="mt-0.5 text-sm text-gray-500">
                     Phí vận chuyển được tính khi thanh toán.
                   </p>
-                  <div className="mt-6">
-                    <a
-                      href="/checkout"
-                      className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                  {carts?.length > 0 ? (
+                    <button type="button" className="mt-6 w-full" disabled>
+                      <a
+                        href="/checkout"
+                        className=" flex items-center justify-center rounded-md border border-transparent bg-primary px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-primary/85"
+                      >
+                        Thanh toán
+                      </a>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      class="text-white w-full mt-6 bg-primary/70 cursor-not-allowed font-medium border-transparent rounded-lg text-sm px-6 py-3 text-center"
+                      disabled
                     >
-                      Thanh toán
-                    </a>
-                  </div>
+                      Hãy chọn sản phẩm
+                    </button>
+                  )}
+
                   <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                     <p>
                       Hoặc{" "}

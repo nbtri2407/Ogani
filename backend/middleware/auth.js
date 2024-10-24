@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 
 async function authToken(req, res, next) {
   try {
-    const token = req?.cookies?.token; 
+    const token = req?.cookies?.token;  
+    
     if (token !== undefined) {
       jwt.verify(token, process.env.TOKEN_SECRET_KEY, function (err, decoded) {
         if (!token) {
@@ -18,7 +19,7 @@ async function authToken(req, res, next) {
         next();
       });
     } else {
-      res.status(200).json({
+      res.status(401).json({
         message: "Please Login First", 
       });
     }

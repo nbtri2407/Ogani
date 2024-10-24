@@ -37,5 +37,11 @@ const SummaryApi = {
   updateProduct: {
     url: `${backendDomain}/update-product`,
   },
-}; 
+  allOrder: {
+    url: `${backendDomain}/all-order`,
+  },
+  order: {
+    url: `${backendDomain}/order`,
+  },
+}; ///all-order
 export default SummaryApi;

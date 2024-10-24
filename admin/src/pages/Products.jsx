@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { IoIosAddCircle } from "react-icons/io";
-import ReactPaginate from "react-paginate"; 
+import ReactPaginate from "react-paginate";
 import axios from "axios";
 import SummaryApi from "../common/apiUrl";
 import moment from "moment";
-import formatPrice from "../helper/formatPrice"; 
+import formatPrice from "../helper/formatPrice";
 import { toast } from "react-toastify";
 import ConfirmDelete from "../components/Modal/ConfirmDelete";
 import AddProductForm from "../components/Forms/AddProductForm";
@@ -14,6 +14,7 @@ const Products = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [editProduct, setEditProduct] = useState({
     productName: "",
     category: "",
@@ -43,7 +44,8 @@ const Products = () => {
         },
       })
       .then(function (response) {
-        setProducts(response?.data?.data); 
+        setProducts(response?.data?.data);
+        setFilteredProducts(response?.data?.data);
       })
       .catch(function (error) {
         toast.error(error?.response?.data?.message);
@@ -75,6 +77,118 @@ const Products = () => {
     };
   };
 
+  const [nameFilter, setNameFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [sortOptions, setSortOptions] = useState({
+    name: "",
+    quantity: "",
+    price: "",
+    discount: "",
+    dateCreate: "",
+  });
+
+  const handleSetSortOptions = (name) => {
+    let type = "asc";
+    if (sortOptions[name] == "asc") type = "desc";
+    if (sortOptions[name] == "desc") type = "";
+
+    setSortOptions({ ...sortOptions, [name]: type });
+  };
+
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const handleFilter = ({ nameFilter }) => {
+    let filtered = products;
+
+    if (nameFilter != "") {
+      filtered = filtered.filter((product) =>
+        product.productName.toLowerCase().includes(nameFilter.toLowerCase())
+      );
+    }
+
+    if (sortOptions.name != "") {
+      filtered = filtered.sort((a, b) => {
+        if (sortOptions.name === "asc") {
+          return a.productName.localeCompare(b.productName);
+        }
+        if (sortOptions.name === "desc") {
+          return b.productName.localeCompare(a.productName);
+        }
+      });
+    }
+
+    if (sortOptions.quantity !== "") {
+      filtered = filtered.sort((a, b) => {
+        // Tính tổng số lượng của từng sản phẩm
+        const totalQuantityA = Object.values(a.size).reduce(
+          (sum, size) => sum + size.quantity,
+          0
+        );
+        const totalQuantityB = Object.values(b.size).reduce(
+          (sum, size) => sum + size.quantity,
+          0
+        );
+
+        if (sortOptions.quantity === "asc") {
+          return totalQuantityA - totalQuantityB; // Sắp xếp tăng dần
+        }
+        if (sortOptions.quantity === "desc") {
+          return totalQuantityB - totalQuantityA; // Sắp xếp giảm dần
+        }
+      });
+    }
+
+    if (sortOptions.price != "") {
+      filtered = filtered.sort((a, b) => {
+        if (sortOptions.price === "asc") {
+          return a.size["5KG"].price - b.size["5KG"].price;
+        }
+        if (sortOptions.price === "desc") {
+          return b.size["5KG"].price - a.size["5KG"].price;
+        }
+      });
+    }
+    if (sortOptions.discount != "") {
+      filtered = filtered.sort((a, b) => {
+        if (sortOptions.discount === "asc") {
+          return a.discount - b.discount;
+        }
+        if (sortOptions.discount === "desc") {
+          return b.discount - a.discount;
+        }
+      });
+    }
+
+    if (sortOptions.dateCreate != "") {
+      filtered = filtered.sort((a, b) => {
+        if (sortOptions.dateCreate === "asc") {
+          return a.createdAt - b.createdAt;
+          // return a.createdAt.localeCompare(b.createdAt);
+        }
+        if (sortOptions.dateCreate === "desc") {
+          return b.createdAt - a.createdAt;
+        }
+      });
+    }
+
+    if (categoryFilter !== "") {
+      filtered = filtered.filter(
+        (product) => product.category._id === categoryFilter
+      );
+    }
+
+    setFilteredProducts(filtered);
+  };
+
+  const handleFilterCategory = (e) => {
+    setCategoryFilter(e.target.value);
+  };
+
+  useEffect(() => {
+    handleFilter({
+      nameFilter,
+    });
+  }, [nameFilter, sortOptions,categoryFilter]);
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -89,7 +203,7 @@ const Products = () => {
     return array.slice(startIndex, startIndex + pageSize);
   };
 
-  const paginatedData = paginate(products, pageSize, currentPage);
+  const paginatedData = paginate(filteredProducts, pageSize, currentPage);
 
   const handleDeleteProduct = async () => {
     await axios
@@ -110,12 +224,25 @@ const Products = () => {
       });
   };
   useEffect(() => {
-    setTotalPages(Math.ceil(products.length / pageSize));
-  }, [pageSize, products]);
+    setTotalPages(Math.ceil(filteredProducts.length / pageSize));
+  }, [pageSize, filteredProducts]);
 
   useEffect(() => {
     fetchAllProducts();
   }, []);
+  useEffect(() => {
+    const categories = Array.from(
+      new Set(
+        products?.map((product) =>
+          JSON.stringify({
+            id: product.category._id,
+            name: product.category.categoryName,
+          })
+        )
+      )
+    ).map((category) => JSON.parse(category));
+    setCategories(categories);
+  }, [products]);
 
   return (
     <div className="px-10 py-2 relative min-h-[90vh]">
@@ -127,46 +254,121 @@ const Products = () => {
           onClick={() => setShowAddForm(true)}
         />
       </div>
-      <div className="flex items-center gap-2 justify-end py-4 border-b border-slate-400">
-        <p>Số sản phẩm trên 1 trang</p>
-        <select
-          className="rounded-lg"
-          value={pageSize}
-          onChange={handlePageSizeChange}
-        >
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-          <option value={15}>15</option>
-          <option value={20}>20</option>
-        </select>
+      <div className="flex items-center gap-16 justify-between py-4 border-b border-slate-400">
+        <div className="flex-1 flex gap-8">
+          <label
+            htmlFor="default-search"
+            className="text-sm font-medium text-gray-900 sr-only"
+          >
+            Search
+          </label>
+          <div className="relative lg:w-2/3">
+            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+              <svg
+                className="w-4 h-4 text-gray-500 "
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </div>
+            <input
+              type="search"
+              value={nameFilter}
+              onChange={(e) => setNameFilter(e.target.value)}
+              id="default-search"
+              className="block w-full ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Tên sản phẩm..."
+              required
+            />
+          </div>
+          <div className="">
+            <select
+              onChange={(e) => handleFilterCategory(e)}
+              id="countries"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            >
+              <option value={""} selected>
+                Chọn danh mục
+              </option>
+              {categories.map((category, index) => (
+                <option key={index} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+              {/* <option value="US">United States</option>
+              <option value="CA">Canada</option>
+              <option value="FR">France</option>
+              <option value="DE">Germany</option> */}
+            </select>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 justify-end">
+          <p>Số sản phẩm trên 1 trang</p>
+          <select
+            className="rounded-lg"
+            value={pageSize}
+            onChange={handlePageSizeChange}
+          >
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={20}>20</option>
+          </select>
+        </div>
       </div>
 
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg h-auto">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg min-h-[60vh]">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3 min-w-32">
                 <div className="flex items-center">
                   Tên sẩn phẩm
-                  <a href="#">
-                    <svg
-                      className="w-3 h-3 ms-1.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                    </svg>
-                  </a>
+                  <button
+                    onClick={() => handleSetSortOptions("name")}
+                    className="cursor-pointer"
+                  >
+                    {sortOptions.name == "" ? (
+                      <svg
+                        className="w-3 h-3 ms-1.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                      </svg>
+                    ) : (
+                      <svg
+                        className={`w-2 h-2 ms-1.5 ${
+                          sortOptions.name == "asc" ? "" : "rotate-180"
+                        }`}
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 16 10"
+                      >
+                        <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
               </th>
               <th scope="col" className="px-6 py-3">
                 <div className="flex items-center">
                   Danh mục
-                  <a href="#">
+                  {/* <a href="#">
                     <svg
                       className="w-3 h-3 ms-1.5"
                       aria-hidden="true"
@@ -176,61 +378,112 @@ const Products = () => {
                     >
                       <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                     </svg>
-                  </a>
+                  </a> */}
                 </div>
               </th>
               <th scope="col" className="px-6 py-3">
                 <div className="flex items-center">
                   Số lượng
-                  <a href="#">
-                    <svg
-                      className="w-3 h-3 ms-1.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                    </svg>
-                  </a>
+                  <button
+                    onClick={() => handleSetSortOptions("quantity")}
+                    className="cursor-pointer"
+                  >
+                    {sortOptions.quantity == "" ? (
+                      <svg
+                        className="w-3 h-3 ms-1.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                      </svg>
+                    ) : (
+                      <svg
+                        className={`w-2 h-2 ms-1.5 ${
+                          sortOptions.quantity == "asc" ? "" : "rotate-180"
+                        }`}
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 16 10"
+                      >
+                        <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
               </th>
               <th scope="col" className="px-6 py-3">
                 <div className="flex items-center">
                   Giá bán
-                  <a href="#">
-                    <svg
-                      className="w-3 h-3 ms-1.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                    </svg>
-                  </a>
+                  <button
+                    onClick={() => handleSetSortOptions("price")}
+                    className="cursor-pointer"
+                  >
+                    {sortOptions.price == "" ? (
+                      <svg
+                        className="w-3 h-3 ms-1.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                      </svg>
+                    ) : (
+                      <svg
+                        className={`w-2 h-2 ms-1.5 ${
+                          sortOptions.price == "asc" ? "" : "rotate-180"
+                        }`}
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 16 10"
+                      >
+                        <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
               </th>
               <th scope="col" className="px-6 py-3">
                 <div className="flex items-center">
                   Giảm giá
-                  <a href="#">
-                    <svg
-                      className="w-3 h-3 ms-1.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                    </svg>
-                  </a>
+                  <button
+                    onClick={() => handleSetSortOptions("discount")}
+                    className="cursor-pointer"
+                  >
+                    {sortOptions.discount == "" ? (
+                      <svg
+                        className="w-3 h-3 ms-1.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                      </svg>
+                    ) : (
+                      <svg
+                        className={`w-2 h-2 ms-1.5 ${
+                          sortOptions.discount == "asc" ? "" : "rotate-180"
+                        }`}
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 16 10"
+                      >
+                        <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
               </th>
               <th scope="col" className="px-6 py-3">
                 <div className="flex items-center">
                   Mô tả
-                  <a href="#">
+                  {/* <a href="#">
                     <svg
                       className="w-3 h-3 ms-1.5"
                       aria-hidden="true"
@@ -240,23 +493,40 @@ const Products = () => {
                     >
                       <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                     </svg>
-                  </a>
+                  </a> */}
                 </div>
               </th>
               <th scope="col" className="px-6 py-3">
                 <div className="flex items-center">
                   Ngày tạo
-                  <a href="#">
-                    <svg
-                      className="w-3 h-3 ms-1.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                    </svg>
-                  </a>
+                  <button
+                    onClick={() => handleSetSortOptions("dateCreate")}
+                    className="cursor-pointer"
+                  >
+                    {sortOptions.dateCreate == "" ? (
+                      <svg
+                        className="w-3 h-3 ms-1.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                      </svg>
+                    ) : (
+                      <svg
+                        className={`w-2 h-2 ms-1.5 ${
+                          sortOptions.dateCreate == "asc" ? "" : "rotate-180"
+                        }`}
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 16 10"
+                      >
+                        <path d="M15.434 1.235A2 2 0 0 0 13.586 0H2.414A2 2 0 0 0 1 3.414L6.586 9a2 2 0 0 0 2.828 0L15 3.414a2 2 0 0 0 .434-2.179Z" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
               </th>
               <th scope="col" className="px-6 py-3">

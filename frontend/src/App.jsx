@@ -50,9 +50,9 @@ function App() {
           withCredentials: true,
         }
       )
-      .then(function (response) {
+      .then(function (response) { 
         localStorage.removeItem("cart");
-        setCartLocal(response.data.data);
+        setCartLocal(response?.data?.data);
         const cartEvent = new CustomEvent("cartChanged", {
           detail: "newCart",
         });

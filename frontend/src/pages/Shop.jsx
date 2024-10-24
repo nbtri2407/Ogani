@@ -29,11 +29,7 @@ const Shop = () => {
     { name: "Newest", href: "#", current: false },
     { name: "Price: Low to High", href: "#", current: false },
     { name: "Price: High to Low", href: "#", current: false },
-  ];
-
-  // function classNames(...classes) {
-  //   return classes.filter(Boolean).join(" ");
-  // }
+  ]; 
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [products, setProducts] = useState([]);

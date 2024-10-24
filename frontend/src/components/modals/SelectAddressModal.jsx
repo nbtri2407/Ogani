@@ -20,6 +20,11 @@ const SelectAddressModal = ({
     callBack(addressSelected);
     onClose();
   };
+  const handleClickSelect = (address) => {
+    callBack(address);
+    onClose();
+  };
+
   return (
     <div
       tabIndex="-1"
@@ -103,10 +108,11 @@ const SelectAddressModal = ({
                       </div>
                       <div className="flex flex-col">
                         <button
+                          onClick={() => handleClickSelect(a)}
                           type="button"
                           className="text-primary hover:underline"
                         >
-                          Cập nhật
+                          Chọn
                         </button>
                       </div>
                     </div>

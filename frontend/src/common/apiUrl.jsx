@@ -42,6 +42,21 @@ const SummaryApi = {
   order: {
     url: `${backendDomain}/order`,
   },
+  cancelOrder: {
+    url: `${backendDomain}/cancel-order`,
+  },
+  refundPayment: {
+    url: `${backendDomain}/refundPayment`,
+  },
+  payment: {
+    url: `${backendDomain}/payment`,
+  },
+  checkPayment: {
+    url: `${backendDomain}/check-status-order`,
+  },
+  retryPayment: {
+    url: `${backendDomain}/retryPayment`,
+  },
 };
-//default-address
+//refundPayment
 export default SummaryApi;
