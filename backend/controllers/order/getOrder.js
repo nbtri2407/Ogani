@@ -2,8 +2,11 @@ const orderModel = require("../../models/orderModel");
 
 async function getOrder(req, res) {
   try {
-    const userId = req.userId; 
-    const orders = await orderModel.find({ user: userId }).populate("address");
+    const userId = req.userId;
+    const orders = await orderModel
+      .find({ user: userId })
+      .sort({ createdAt: -1 })
+      .populate("address");
 
     res.status(200).json({
       orders,

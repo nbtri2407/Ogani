@@ -186,7 +186,7 @@ const Orders = () => {
 
           {paginatedData.map((order, index) => (
             <div
-              className="grid grid-cols-4 col-span-4 gap-2 border-t border-b py-2"
+              className="grid grid-cols-4 col-span-4 gap-2 border-t border-b p-4 rounded-lg bg-slate-200"
               key={index}
             >
               <div className="grid grid-cols-2 gap-2 items-start lg:col-span-3 col-span-4">
@@ -210,7 +210,7 @@ const Orders = () => {
                 </p>
                 <p className="col-span-1">{order?.paymentStatus}</p>
 
-                <div className="grid grid-cols-2 col-span-2 bg-slate-100 p-2">
+                <div className="grid grid-cols-2 col-span-2 py-2">
                   <p className="md:col-span-1 col-span-2">
                     <strong>Người nhận:</strong>
                     {` ${order?.address.receiver}`}

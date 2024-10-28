@@ -303,11 +303,7 @@ const Products = () => {
                 <option key={index} value={category.id}>
                   {category.name}
                 </option>
-              ))}
-              {/* <option value="US">United States</option>
-              <option value="CA">Canada</option>
-              <option value="FR">France</option>
-              <option value="DE">Germany</option> */}
+              ))} 
             </select>
           </div>
         </div>

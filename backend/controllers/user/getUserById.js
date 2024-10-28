@@ -6,18 +6,19 @@ async function getUserById(req, res) {
     if (userId) {
       await userModel
         .findById(userId)
+        .populate("wishList")
         .then((user) => {
           res.status(200).json({
             message: "User Details",
-            data: user, 
+            data: user,
           });
         })
-        .catch((error) => { 
+        .catch((error) => {
           res.status(400).json({
-            message: error, 
+            message: error,
           });
         });
-    }else{
+    } else {
       res.status(200).json({
         message: "Not user login",
         data: null,
@@ -25,7 +26,7 @@ async function getUserById(req, res) {
     }
   } catch (error) {
     res.status(400).json({
-      message: error.message, 
+      message: error.message,
     });
   }
 }

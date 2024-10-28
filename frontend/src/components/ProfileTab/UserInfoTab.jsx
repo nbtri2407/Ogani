@@ -28,10 +28,10 @@ const UserInfoTab = () => {
           <p className="font-bold">Số điện thoại:</p>
           <p className="col-span-2">{user?.phone}</p>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        {/* <div className="grid grid-cols-3 gap-4">
           <p className="font-bold">Địa chỉ:</p>
           <p className="col-span-2">{user?.phone}</p>
-        </div>
+        </div> */}
         <div className="grid grid-cols-3 gap-4">
           <p className="col-span-2"></p>
           <button

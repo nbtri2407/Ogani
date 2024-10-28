@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import formatPrice from "../../../../frontend/src/helper/formatPrice";
 import SummaryApi from "../../common/apiUrl";
 
@@ -27,6 +27,8 @@ const OrderDetailsModal = ({ order, open, onClose, CallBack }) => {
   useEffect(() => {
     getOrderDetails();
   }, [order]);
+
+  const [rating, setRating] = useState([]);
   return (
     <div
       tabIndex="-1"
@@ -68,7 +70,7 @@ const OrderDetailsModal = ({ order, open, onClose, CallBack }) => {
           <div className="w-full flex flex-col gap-2 max-h-[50vh] overflow-y-auto p-2">
             {orderDetail.map((item, i) => (
               <div className="border-b-2" key={i}>
-                <div className="flex gap-6 items-center">
+                <div className="flex gap-6 items-center pb-2">
                   <a href="#" className="relative">
                     <img
                       src={item?.product?.imageUrl?.[0]}
@@ -98,14 +100,47 @@ const OrderDetailsModal = ({ order, open, onClose, CallBack }) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-4 justify-end">
+                <div className="flex gap-4 justify-between mb-2">
+                  <div className="flex">
+                    {item?.rating != 0 ? (
+                      <div className="flex items-center">
+                        {[...Array(5)].map((star, index) => {
+                          const currentRating = index + 1;
+                          return (
+                            <label key={index} className="flex">
+                              <input type="radio" style={{ display: "none" }} />
+                              <svg
+                                className={`w-5 h-5 ${
+                                  currentRating <= item?.rating
+                                    ? "text-yellow-300"
+                                    : "text-slate-500"
+                                } `}
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                              </svg>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                </div>
+                {/* <div className="flex gap-4 justify-end">
                   <p className="text-yellow-500 hover:underline cursor-pointer">
                     Đánh giá
                   </p>
                   <a href="#" className="text-primary hover:underline">
                     Xem sản phẩm
                   </a>
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
@@ -133,6 +168,12 @@ const OrderDetailsModal = ({ order, open, onClose, CallBack }) => {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="grid sm:grid-cols-2 p-4 sm:gap-2 border">
+            <div className="col-span-2 flex flex-col gap-2">
+              <p className="">Đánh giá của người mua:</p>
+              <p className="bg-slate-200 p-2">{order?.feedBack}</p>
             </div>
           </div>
           {/* <div className="md:col-span-3 mt-2 flex gap-2 items-center justify-end">

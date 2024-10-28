@@ -180,7 +180,7 @@ const ProductDetails = () => {
               return (
                 <div className="cursor-pointer" key={i}>
                   <img
-                    className={`h-auto max-w-full rounded-lg hover:scale-105 hover:border border-slate-300 transition-all ${
+                    className={`col-span-1 aspect-square rounded-lg hover:scale-105 hover:border border-slate-300 transition-all ${
                       imgUrl === showImg ? "border" : ""
                     }`}
                     src={imgUrl}
@@ -203,17 +203,17 @@ const ProductDetails = () => {
                     key={rating}
                     aria-hidden="true"
                     className={classNames(
-                      reviews.average > rating
-                        ? "text-gray-900"
-                        : "text-gray-200",
+                      productDetails?.averageRating > rating
+                        ? "text-yellow-300"
+                        : "text-gray-400",
                       "h-5 w-5 flex-shrink-0"
                     )}
                   />
                 ))}
               </div>
-              <p className="sr-only">{reviews.average} out of 5 stars</p>
-              <p className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                {reviews.totalCount} reviews
+              <p className="sr-only">{productDetails?.averageRating} out of 5 stars</p>
+              <p className="ml-3 text-sm font-medium text-primary">
+                {productDetails?.ratingCount} reviews
               </p>
             </div>
           </div>

@@ -6,6 +6,7 @@ async function getAllOrder(req, res) {
     const orders1 = await orderModel.find();
     const orders = await orderModel
       .find()
+      .sort({ createdAt: -1 })
       .populate("address")
       .skip((page - 1) * limit)
       .limit(limit);
@@ -14,7 +15,7 @@ async function getAllOrder(req, res) {
     const totalPages = Math.ceil(totalItems / limit);
 
     res.status(200).json({
-      data: orders, 
+      data: orders,
       pagination: {
         currentPage: page,
         totalPages,

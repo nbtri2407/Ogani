@@ -29,7 +29,7 @@ const Shop = () => {
     { name: "Newest", href: "#", current: false },
     { name: "Price: Low to High", href: "#", current: false },
     { name: "Price: High to Low", href: "#", current: false },
-  ]; 
+  ];
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [products, setProducts] = useState([]);
@@ -525,7 +525,11 @@ const Shop = () => {
                     {paginatedData?.map((p, i) => {
                       return (
                         <div className="col-span-1" key={i}>
-                          <FeaturedProductCard product={p} key={i} />
+                          <FeaturedProductCard
+                            product={p}
+                            key={i}
+                            callBack={() => fetchAllProducts()}
+                          />
                         </div>
                       );
                     })}
@@ -543,13 +547,13 @@ const Shop = () => {
                       containerClassName={
                         "flex items-center justify-center gap-1"
                       }
-                      pageClassName={"px-3 py-1 border border-blue-400 "}
+                      pageClassName={"px-3 py-1 border border-slate-400 "}
                       pageLinkClassName={"page-link"}
-                      previousClassName={"px-3 py-1 border border-blue-400"}
+                      previousClassName={"px-3 py-1 border border-slate-400"}
                       previousLinkClassName={"page-link"}
-                      nextClassName={"px-3 py-1 border border-blue-400 "}
+                      nextClassName={"px-3 py-1 border border-slate-400 "}
                       nextLinkClassName={"page-link"}
-                      breakClassName={"px-3 py-1 border border-blue-400 "}
+                      breakClassName={"px-3 py-1 border border-slate-400 "}
                       breakLinkClassName={"page-link"}
                       activeClassName={"bg-blue-400 text-white"}
                     />

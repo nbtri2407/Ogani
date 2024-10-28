@@ -85,10 +85,7 @@ const OrderDetailsModal = ({ order, open, onClose, callBack }) => {
                       src={item?.product?.imageUrl?.[0]}
                       alt="item"
                       className="w-16 h-16 border border-black/20 object-scale-down cursor-pointer hover:border-primary transition-all"
-                    />
-                    {/* <div className="absolute -top-1 -right-1 rounded-full bg-primary text-xs text-white w-5 h-5 flex items-center justify-center">
-                        {order?.quantity}
-                      </div> */}
+                    /> 
                   </a>
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
@@ -109,11 +106,8 @@ const OrderDetailsModal = ({ order, open, onClose, callBack }) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-4 justify-end">
-                  <p className="text-yellow-500 hover:underline cursor-pointer">
-                    Đánh giá
-                  </p>
-                  <a href="#" className="text-primary hover:underline">
+                <div className="flex gap-4 justify-end"> 
+                  <a href={`/product/${item?.product?._id}`} className="text-primary hover:underline">
                     Xem sản phẩm
                   </a>
                 </div>

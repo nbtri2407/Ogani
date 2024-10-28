@@ -20,6 +20,14 @@ const productModel = new Schema(
       type: Number,
       default: 0,
     },
+    averageRating: {
+      type: Number,
+      default: 0, 
+    },
+    ratingCount: {
+      type: Number,
+      default: 0,  
+    },
     size: {
       "100G": {
         quantity: { type: Number, min: 0, required: true },

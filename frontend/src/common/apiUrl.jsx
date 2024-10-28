@@ -42,6 +42,9 @@ const SummaryApi = {
   order: {
     url: `${backendDomain}/order`,
   },
+  feedback: {
+    url: `${backendDomain}/feedback`,
+  },
   cancelOrder: {
     url: `${backendDomain}/cancel-order`,
   },
@@ -57,6 +60,9 @@ const SummaryApi = {
   retryPayment: {
     url: `${backendDomain}/retryPayment`,
   },
+  wishlist: {
+    url: `${backendDomain}/wishlist`,
+  },
 };
-//refundPayment
+//wishlist
 export default SummaryApi;

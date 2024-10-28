@@ -42,6 +42,8 @@ const Navbar = ({ openCart }) => {
 
   const menuRef = useRef(null);
 
+  
+
   // User Logout
   const handleLogout = async () => {
     await axios
@@ -83,6 +85,7 @@ const Navbar = ({ openCart }) => {
     countTotalCartItems();
   }, [localStorage.getItem("cart")]);
   useEffect(() => {
+    setWishList(user?.wishList?.length);
     setCarts(getCartFromLocalStorage());
     countTotalCartItems();
   }, []);
@@ -94,6 +97,8 @@ const Navbar = ({ openCart }) => {
     countTotalCartItems();
   });
 
+  // wishListChanged
+
   const countTotalCartItems = () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const totalItems = cart.reduce((total, item) => {
@@ -101,6 +106,16 @@ const Navbar = ({ openCart }) => {
     }, 0);
     setTotalItems(totalItems);
   };
+
+  const [wishList, setWishList] = useState(0);
+
+  window.addEventListener("cartChanged", (event) => {
+    getUserDetails();
+  });
+
+  useEffect(() => {
+    setWishList(user?.wishList?.length);
+  }, [user]);
 
   return (
     <div className="mt-6 px-6 xl:px-0">
@@ -225,9 +240,9 @@ const Navbar = ({ openCart }) => {
               </div>
               <div className="relative">
                 <FaHeart className="cursor-pointer text-2xl" />
-                {totalItems > 0 && (
+                {wishList > 0 && (
                   <span className="absolute px-1 -top-2 -right-3 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
-                    {totalItems}
+                    {wishList}
                   </span>
                 )}
               </div>

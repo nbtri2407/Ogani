@@ -10,6 +10,7 @@ const orderModel = new Schema(
     },
     orderId: { type: String },
     zpTransId: { type: String },
+    feedBack: { type: String },
     totalAmount: { type: Number, required: true },
     shippingFee: { type: Number, required: true },
     discount: { type: Number, default: 0 },

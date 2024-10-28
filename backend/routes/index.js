@@ -36,6 +36,9 @@ const cancelOrder = require("../controllers/order/cancelOrder");
 const refundPayment = require("../controllers/payment/refundPayment");
 const deleteAddress = require("../controllers/address/deleteAddress");
 const getAllOrder = require("../controllers/order/getAllOrder");
+const feedBackOrder = require("../controllers/order/feedBackOrder");
+const addToWishList = require("../controllers/products/addToWishList");
+const deleteWishList = require("../controllers/products/deleteWishList");
 const router = express.Router();
 
 router.post("/login", login);
@@ -47,6 +50,9 @@ router.get("/get-user", authToken, getUserById);
 router.get("/get-all-user", authToken, getAllUsers);
 router.post("/update-user", authToken, updateInfoUser);
 
+router.post("/wishlist", authToken, addToWishList);
+router.patch("/wishlist", authToken, deleteWishList);
+
 router.get("/get-all-categories", getAllCategory);
 router.post("/add-category", authToken, addCategory);
 router.delete("/delete-category", authToken, deleteCategory);
@@ -57,7 +63,7 @@ router.post("/add-product", authToken, addProduct);
 router.delete("/delete-product", authToken, deleteProduct);
 router.put("/update-product", authToken, updateProduct);
 router.get("/product-details", productDetails);
-// router.put("/update-product", authToken, updateCategory);updateProduct
+// router.put("/update-product", authToken, updateCategory);updateProduct addToWishList
 
 router.post("/update-cart", authToken, updateCart);
 router.post("/merge-cart", authToken, mergeCart);
@@ -76,6 +82,7 @@ router.post("/order", authToken, createOrder);
 router.put("/order", authToken, updatePaymentOrder);
 router.patch("/order", authToken, updateStatusOrder);
 router.post("/cancel-order", authToken, cancelOrder);
+router.post("/feedback", authToken, feedBackOrder);
 
 router.post("/payment", authToken, payment);
 router.post("/callback", callBackPayment);
