@@ -50,7 +50,9 @@ const AddCategoryForm = ({ onClose, callBack }) => {
             },
           }
         );
-        const des = result.data.candidates[0].content.parts[0].text;
+        let des = result.data.candidates[0].content.parts[0].text; 
+        des = des.replace(/#/g, ""); 
+
         setData((prevData) => ({
           ...prevData,
           description: des,

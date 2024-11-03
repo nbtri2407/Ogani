@@ -350,9 +350,10 @@ const OrderTab = () => {
 
                     {item?.status == "Đang vận chuyển" && (
                       <button
-                        onClick={() =>
-                          updateOrderStatus(item._id, "Đã nhận hàng")
-                        }
+                        onClick={() => {
+                          updateOrderStatus(item._id, "Đã nhận hàng");
+                          updateOrderStatusPayment(item._id, "Đã thanh toán");
+                        }}
                         type="button"
                         className="text-primary hover:text-white border border-primary hover:bg-primary font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
                       >

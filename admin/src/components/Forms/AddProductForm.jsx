@@ -53,7 +53,7 @@ const AddProductForm = ({ onClose, callBack }) => {
         setCategoriesList(response?.data?.data);
       })
       .catch(function (error) {
-        toast.error(error?.response?.data?.message);
+        console.log("error",error); 
       });
   };
 
@@ -83,7 +83,8 @@ const AddProductForm = ({ onClose, callBack }) => {
             },
           }
         );
-        const des = result.data.candidates[0].content.parts[0].text;
+        let des = result.data.candidates[0].content.parts[0].text; 
+        des = des.replace(/#/g, "");  
         setData((prevData) => ({
           ...prevData,
           description: des,
@@ -340,8 +341,8 @@ const AddProductForm = ({ onClose, callBack }) => {
                   )}
                 </div>
                 <textarea
-                  rows="3"
-                  className=" p-2 border border-black/50 rounded outline-none"
+                  rows="4"
+                  className="text-black p-2 border border-black/50 rounded outline-none"
                   type="text"
                   name="description"
                   id="description"

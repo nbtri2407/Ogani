@@ -9,6 +9,7 @@ import ProductDetails from "../pages/ProductDetails";
 import Checkout from "../pages/Checkout";
 import Profile from "../pages/Profile";
 import OrderSuccess from "../pages/OrderSuccess";
+import WishList from "../pages/WishList";
 
 const router = createBrowserRouter([
   {
@@ -51,7 +52,11 @@ const router = createBrowserRouter([
         path: "/auth",
         element: <LoginSignup />,
       },
-      // OrderSuccess
+      {
+        path: "/wishlist",
+        element: <WishList />,
+      },
+      // WishList
     ],
   },
 

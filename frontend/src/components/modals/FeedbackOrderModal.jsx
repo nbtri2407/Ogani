@@ -264,7 +264,7 @@ const FeedbackOrderModal = ({ order, open, onClose, callBack }) => {
                 <p className="">Đánh giá của bạn về đơn hàng:</p>
                 {order?.status == "Hoàn thành" ? (
                   <>
-                  <p className="bg-slate-200 p-2">{order?.feedBack}</p>
+                    <p className="bg-slate-200 p-2">{order?.feedBack}</p>
                   </>
                 ) : (
                   <>

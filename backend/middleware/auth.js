@@ -8,7 +8,7 @@ async function authToken(req, res, next) {
       jwt.verify(token, process.env.TOKEN_SECRET_KEY, function (err, decoded) {
         if (!token) {
           res.status(200).json({
-            message: "Please Login First", 
+            message: "Hãy đăng nhập trước", 
           });
         }
         if (err) {
@@ -20,7 +20,7 @@ async function authToken(req, res, next) {
       });
     } else {
       res.status(401).json({
-        message: "Please Login First", 
+        message: "Hãy đăng nhập trước", 
       });
     }
   } catch (error) {

@@ -42,8 +42,6 @@ const Navbar = ({ openCart }) => {
 
   const menuRef = useRef(null);
 
-  
-
   // User Logout
   const handleLogout = async () => {
     await axios
@@ -238,14 +236,20 @@ const Navbar = ({ openCart }) => {
                   </motion.ul>
                 )}
               </div>
-              <div className="relative">
-                <FaHeart className="cursor-pointer text-2xl" />
-                {wishList > 0 && (
-                  <span className="absolute px-1 -top-2 -right-3 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
-                    {wishList}
-                  </span>
-                )}
-              </div>
+              <Link
+                className="text-[1rem] hover:text-primary hover:underline transition-all"
+                to={"/wishlist"}
+              >
+                <div className="relative">
+                  <FaHeart className="cursor-pointer text-2xl" />
+                  {wishList > 0 && (
+                    <span className="absolute px-1 -top-2 -right-3 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
+                      {wishList}
+                    </span>
+                  )}
+                </div>
+              </Link>
+
               <div className="relative">
                 <IoCart
                   className="cursor-pointer text-3xl"

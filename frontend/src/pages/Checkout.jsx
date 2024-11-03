@@ -14,17 +14,27 @@ const Checkout = () => {
   const user = useSelector((state) => state.user.user);
   const navigator = useNavigate();
   const location = useLocation();
+  const [promoCode, setPromoCode] = useState("");
+  const [promoCodeUsed, setPromoCodeUsed] = useState("");
   const [discount, setDiscount] = useState(0);
   const [shipMethod, setShipMethod] = useState("standard");
+  const [openSelectAddress, setOpenSelectAddress] = useState(false);
+
+  const [address, setAddress] = useState({});
+  const [addressList, setAddressList] = useState([]);
+  const [payment, setPayment] = useState("cod");
+  const [carts, setCarts] = useState([]);
+  const [openOrderList, setOpenOrderList] = useState(true);
+
   const shipMethodList = {
     standard: 50000,
     express: 70000,
   };
+
   const handleShipChange = (event) => {
     setShipMethod(event.target.value);
   };
 
-  const [openOrderList, setOpenOrderList] = useState(true);
   useEffect(() => {
     const handleResize = () => {
       if (window.matchMedia("(max-width: 768px)").matches) {
@@ -41,12 +51,10 @@ const Checkout = () => {
     };
   }, []);
 
-  const [payment, setPayment] = useState("cod");
   const handleOnChecedPayment = (e) => {
     setPayment(e.target.value);
   };
 
-  const [carts, setCarts] = useState([]);
   const getCartFromLocalStorage = () => {
     return JSON.parse(localStorage.getItem("cart")) || [];
   };
@@ -68,11 +76,6 @@ const Checkout = () => {
     setCarts(getCartFromLocalStorage()) || [];
     totalPrice = calculateTotalCartPrice();
   });
-
-  const [openSelectAddress, setOpenSelectAddress] = useState(false);
-
-  const [address, setAddress] = useState({});
-  const [addressList, setAddressList] = useState([]);
 
   const getAllAddress = async () => {
     await axios
@@ -132,13 +135,14 @@ const Checkout = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const handleCheckout = async (e) => {
     e.preventDefault();
-    if (isDisabled) return; 
+    if (isDisabled) return;
     setIsDisabled(true);
 
     const priceCheckout = totalPrice + shipMethodList[shipMethod] - discount;
     console.log(priceCheckout);
 
     const data = {
+      promoCode: promoCodeUsed,
       orderItem: carts,
       totalAmount: totalPrice,
       shippingFee: shipMethodList[shipMethod],
@@ -186,7 +190,7 @@ const Checkout = () => {
     }
 
     setTimeout(() => {
-      setIsDisabled(false); 
+      setIsDisabled(false);
     }, 3000);
   };
 
@@ -201,6 +205,37 @@ const Checkout = () => {
   const handleEditAddress = (a) => {
     setAddressUpdate(a);
     setOpenModalUpdate(true);
+  };
+
+  const handleApplyPromoCode = async () => {
+    if (promoCode.trim() == "") {
+      toast.error("Hãy nhập mã giảm giá");
+      return;
+    } else {
+      await axios
+        .post(
+          SummaryApi.applyPromoCode.url,
+          {
+            code: promoCode.trim(),
+            orderTotal: totalPrice + shipMethodList[shipMethod],
+          },
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(function (response) {
+          setPromoCodeUsed(response?.data?.promoCode)
+          setDiscount(response?.data?.discountAmount);
+          toast.success(response?.data?.message);
+        })
+        .catch(function (error) {
+          toast.error(error?.response?.data?.message);
+          setDiscount(0);
+        });
+    }
   };
 
   return (
@@ -444,12 +479,19 @@ const Checkout = () => {
             <input
               type="text"
               name="discount"
-              // value={info.home}
-              // onChange={(e) => handleInputOnChange(e)}
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
               placeholder="Mã giảm giá"
               className="w-full p-2 border border-black/30 rounded-md outline-none"
+              required
             />
-            <button type="button" className="primary-btn w-64">
+            <button
+              onClick={() => {
+                handleApplyPromoCode();
+              }}
+              type="button"
+              className="primary-btn w-64"
+            >
               Áp dụng
             </button>
           </div>

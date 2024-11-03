@@ -4,6 +4,7 @@ const moment = require("moment");
 const productModel = require("../../models/productModel");
 const orderModel = require("../../models/orderModel");
 const orderDetailModel = require("../../models/orderDetailModel");
+const promoCodeModel = require("../../models/promoCodeModel");
 
 async function payment(req, res) {
   console.log("payment");
@@ -18,6 +19,7 @@ async function payment(req, res) {
     address,
     shippingMethod,
     paymentMethod,
+    promoCode,
   } = req.body;
 
   const config = {
@@ -76,9 +78,19 @@ async function payment(req, res) {
       paymentMethod,
     });
 
+    if (discount > 0) {
+      const promo = await promoCodeModel.findOne({
+        code: promoCode.toUpperCase(),
+      });
+      promo.usedCount += 1;
+      await promo.save();
+    }
+
     for (const item of orderItem) {
-      if (!(item.product.size[item.size].quantity > 0)) { 
-        throw new Error("Có sản phẩm không đủ hàng. Vui lòng cập nhật lại giỏ hàng");
+      if (!(item.product.size[item.size].quantity > 0)) {
+        throw new Error(
+          "Có sản phẩm không đủ hàng. Vui lòng cập nhật lại giỏ hàng"
+        );
       }
     }
 

@@ -39,6 +39,12 @@ const getAllOrder = require("../controllers/order/getAllOrder");
 const feedBackOrder = require("../controllers/order/feedBackOrder");
 const addToWishList = require("../controllers/products/addToWishList");
 const deleteWishList = require("../controllers/products/deleteWishList");
+const addPromoCode = require("../controllers/discount/addPromoCode");
+const getAllPromoCode = require("../controllers/discount/getAllPromoCode");
+const deletePromoCode = require("../controllers/discount/deletePromoCode");
+const updatePromoCode = require("../controllers/discount/updatePromoCode");
+const applyPromoCode = require("../controllers/discount/applyPromoCode");
+const getStatistics1 = require("../controllers/statistics/getStatistics1");
 const router = express.Router();
 
 router.post("/login", login);
@@ -91,5 +97,14 @@ router.post("/check-status-order", authToken, checkPayment);
 router.post("/retryPayment", authToken, retryPayment);
 router.post("/refundPayment", authToken, refundPayment);
 
-// refundPayment
+router.get("/promoCode", authToken, getAllPromoCode);
+router.post("/promoCode", authToken, addPromoCode);
+router.put("/promoCode", authToken, updatePromoCode);
+router.delete("/promoCode", authToken, deletePromoCode);
+
+router.post("/applyPromoCode", authToken, applyPromoCode);
+
+router.get("/statistics1", authToken, getStatistics1);
+
+// applyPromoCode
 module.exports = router;

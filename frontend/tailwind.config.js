@@ -13,7 +13,7 @@ export default {
         bgColor: "#f3f6fa",
       },
       fontFamily: {
-        sans: ["Cairo", "sans-serif"],
+        sans: ["Roboto", "sans-serif"],
       },
     },
   },

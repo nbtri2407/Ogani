@@ -63,6 +63,12 @@ const SummaryApi = {
   wishlist: {
     url: `${backendDomain}/wishlist`,
   },
+  promoCode: {
+    url: `${backendDomain}/promoCode`,
+  },
+  applyPromoCode: {
+    url: `${backendDomain}/applyPromoCode`,
+  },
 };
-//wishlist
+//applyPromoCode
 export default SummaryApi;

@@ -1,4 +1,3 @@
-
 const backendDomain = "http://localhost:5050/api";
 const SummaryApi = {
   login: {
@@ -43,5 +42,11 @@ const SummaryApi = {
   order: {
     url: `${backendDomain}/order`,
   },
-}; ///all-order
+  promoCode: {
+    url: `${backendDomain}/promoCode`,
+  },
+  statistics1: {
+    url: `${backendDomain}/statistics1`,
+  },
+}; ///statistics1
 export default SummaryApi;

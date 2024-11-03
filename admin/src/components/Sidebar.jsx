@@ -21,7 +21,7 @@ const Sidebar = () => {
             <li>
               <a
                 href="/dashboard"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <svg
                   className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -39,7 +39,7 @@ const Sidebar = () => {
             <li>
               <a
                 href="/users"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <svg
                   className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -58,7 +58,7 @@ const Sidebar = () => {
             <li>
               <a
                 href="/categories"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <svg
                   className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -77,7 +77,7 @@ const Sidebar = () => {
             <li>
               <a
                 href="/products"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <svg
                   className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -94,10 +94,10 @@ const Sidebar = () => {
             <li>
               <a
                 href="/orders"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <svg
-                  className="w-6 h-6 text-gray-500 group-hover:text-gray-800 dark:text-white"
+                  className="w-6 h-6 text-gray-500 group-hover:text-gray-800"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -111,15 +111,40 @@ const Sidebar = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-
                 <span className="flex-1 ms-3 whitespace-nowrap ">Đơn hàng</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="/promo-code"
+                className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 group"
+              >
+                <svg
+                  className="w-6 h-6 text-gray-500 group-hover:text-gray-800"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12 2c-.791 0-1.55.314-2.11.874l-.893.893a.985.985 0 0 1-.696.288H7.04A2.984 2.984 0 0 0 4.055 7.04v1.262a.986.986 0 0 1-.288.696l-.893.893a2.984 2.984 0 0 0 0 4.22l.893.893a.985.985 0 0 1 .288.696v1.262a2.984 2.984 0 0 0 2.984 2.984h1.262c.261 0 .512.104.696.288l.893.893a2.984 2.984 0 0 0 4.22 0l.893-.893a.985.985 0 0 1 .696-.288h1.262a2.984 2.984 0 0 0 2.984-2.984V15.7c0-.261.104-.512.288-.696l.893-.893a2.984 2.984 0 0 0 0-4.22l-.893-.893a.985.985 0 0 1-.288-.696V7.04a2.984 2.984 0 0 0-2.984-2.984h-1.262a.985.985 0 0 1-.696-.288l-.893-.893A2.984 2.984 0 0 0 12 2Zm3.683 7.73a1 1 0 1 0-1.414-1.413l-4.253 4.253-1.277-1.277a1 1 0 0 0-1.415 1.414l1.985 1.984a1 1 0 0 0 1.414 0l4.96-4.96Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+
+                <span className="flex-1 ms-3 whitespace-nowrap ">
+                  Mã giảm giá
+                </span>
               </a>
             </li>
           </ul>
         </div>
       </aside>
     </div>
-  ); 
+  );
 };
 
 export default Sidebar;

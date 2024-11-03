@@ -96,7 +96,7 @@ const Products = () => {
   };
 
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const handleFilter = ({ nameFilter }) => {
+  const handleFilter = ({ nameFilter, sortOptions }) => {
     let filtered = products;
 
     if (nameFilter != "") {
@@ -116,7 +116,7 @@ const Products = () => {
       });
     }
 
-    if (sortOptions.quantity !== "") {
+    if (sortOptions.quantity != "") {
       filtered = filtered.sort((a, b) => {
         // Tính tổng số lượng của từng sản phẩm
         const totalQuantityA = Object.values(a.size).reduce(
@@ -186,8 +186,9 @@ const Products = () => {
   useEffect(() => {
     handleFilter({
       nameFilter,
+      sortOptions,
     });
-  }, [nameFilter, sortOptions,categoryFilter]);
+  }, [nameFilter, sortOptions, categoryFilter]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -249,10 +250,13 @@ const Products = () => {
       <div className="flex items-center justify-between py-4 border-b border-slate-400">
         <h1 className="text-[2rem] font-bold">Tất cả sản phẩm</h1>
 
-        <IoIosAddCircle
-          className="text-[1.6rem] hover:text-primary transition-all cursor-pointer"
+        <button
+          className="flex items-center gap-2 group hover:underline transition-all"
           onClick={() => setShowAddForm(true)}
-        />
+        >
+          Thêm sản phẩm
+          <IoIosAddCircle className="text-[1.6rem] group-hover:text-primary transition-all cursor-pointer" />
+        </button>
       </div>
       <div className="flex items-center gap-16 justify-between py-4 border-b border-slate-400">
         <div className="flex-1 flex gap-8">
@@ -294,16 +298,16 @@ const Products = () => {
             <select
               onChange={(e) => handleFilterCategory(e)}
               id="countries"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
             >
               <option value={""} selected>
-                Chọn danh mục
+                Tất cả
               </option>
               {categories.map((category, index) => (
                 <option key={index} value={category.id}>
                   {category.name}
                 </option>
-              ))} 
+              ))}
             </select>
           </div>
         </div>

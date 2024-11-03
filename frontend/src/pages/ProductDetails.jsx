@@ -91,8 +91,7 @@ const ProductDetails = () => {
     fetchProductDetails();
   }, []);
 
-  const addOrUpdateProductInCart = () => { 
-
+  const addOrUpdateProductInCart = () => {
     if (selectedSize == null) {
       toast.error("Chọn phân loại sản phẩm");
       return;
@@ -102,8 +101,7 @@ const ProductDetails = () => {
       (item) =>
         item.product._id === productDetails._id && item.size === selectedSize
     );
-    if (existingProductIndex !== -1) { 
-
+    if (existingProductIndex !== -1) {
       if (
         Number(cart[existingProductIndex].quantity) + Number(quantity) <
         Number(cart[existingProductIndex].product.size[selectedSize].quantity)
@@ -151,7 +149,7 @@ const ProductDetails = () => {
                   height={20}
                   viewBox="0 0 16 20"
                   aria-hidden="true"
-                  className="h-5 w-4 text-gray-300"
+                  className="h-5 w-4 text-gray-500"
                 >
                   <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
                 </svg>
@@ -170,7 +168,7 @@ const ProductDetails = () => {
         <div className="md:col-span-1 col-span-2 grid gap-4">
           <div className="w-full">
             <img
-              className="h-auto w-full rounded-lg border border-slate-300"
+              className="aspect-square w-full rounded-lg border border-slate-300"
               src={showImg}
               alt=""
             />
@@ -180,7 +178,7 @@ const ProductDetails = () => {
               return (
                 <div className="cursor-pointer" key={i}>
                   <img
-                    className={`col-span-1 aspect-square rounded-lg hover:scale-105 hover:border border-slate-300 transition-all ${
+                    className={`aspect-square rounded-lg hover:scale-105 hover:border border-slate-300 transition-all ${
                       imgUrl === showImg ? "border" : ""
                     }`}
                     src={imgUrl}
@@ -196,6 +194,7 @@ const ProductDetails = () => {
           <p className="text-4xl font-bold">{productDetails?.productName}</p>
           <div className="my-2">
             <h3 className="sr-only">Reviews</h3>
+            {/* <div className="flex items-center gap-4"> */}
             <div className="flex items-center">
               <div className="flex items-center">
                 {[0, 1, 2, 3, 4].map((rating) => (
@@ -211,11 +210,15 @@ const ProductDetails = () => {
                   />
                 ))}
               </div>
-              <p className="sr-only">{productDetails?.averageRating} out of 5 stars</p>
-              <p className="ml-3 text-sm font-medium text-primary">
+              <p className="sr-only">
+                {productDetails?.averageRating} out of 5 stars
+              </p>
+              <p className="ml-3 text-md font-medium text-primary">
                 {productDetails?.ratingCount} reviews
               </p>
+              <p className="ml-3 text-md font-medium">(Đã bán: {productDetails?.sold})</p>
             </div>
+            {/* </div> */}
           </div>
 
           {selectedSize ? (
@@ -256,9 +259,9 @@ const ProductDetails = () => {
                     disabled={!(sizeData[key].quantity > 0)}
                     className={classNames(
                       sizeData[key].quantity > 0
-                        ? "cursor-pointer bg-white text-gray-900 shadow-sm"
+                        ? "cursor-pointer bg-white text-gray-600 shadow-sm"
                         : "cursor-not-allowed bg-gray-50 text-gray-200",
-                      "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none data-[focus]:ring-2 data-[focus]:ring-indigo-500 sm:flex-1 sm:py-6"
+                      "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-bold uppercase hover:bg-gray-50 focus:outline-none data-[focus]:ring-2 data-[focus]:ring-indigo-500 sm:flex-1 sm:py-6"
                     )}
                   >
                     <span>{key}</span>

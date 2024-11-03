@@ -21,8 +21,7 @@ const UpdateCategoryForm = ({ onClose, callBack, category }) => {
 
   const [file, setFile] = useState([]);
 
-  const handleUploadImg = (item) => {
-    console.log(123);
+  const handleUploadImg = (item) => { 
     if (initState) {
       setInitState(false);
       setData({ ...data, ["imageUrl"]: "" });
@@ -56,7 +55,8 @@ const UpdateCategoryForm = ({ onClose, callBack, category }) => {
             },
           }
         );
-        const des = result.data.candidates[0].content.parts[0].text;
+        let des = result.data.candidates[0].content.parts[0].text; 
+        des = des.replace(/#/g, "");  
         setData((prevData) => ({
           ...prevData,
           description: des,
@@ -92,9 +92,7 @@ const UpdateCategoryForm = ({ onClose, callBack, category }) => {
     } else if (!initState) {
       setData({ ...data, ["imageUrl"]: "" });
     }
-  }, [file]);
-
-  console.log("data", data);
+  }, [file]); 
 
   return (
     <div className="absolute top-0 h-[92vh] left-0 right-0 bg-black/20">

@@ -1,6 +1,7 @@
 const orderDetailModel = require("../../models/orderDetailModel");
 const orderModel = require("../../models/orderModel");
 const productModel = require("../../models/productModel");
+const promoCodeModel = require("../../models/promoCodeModel");
 
 async function createOrder(req, res) {
   try {
@@ -14,6 +15,7 @@ async function createOrder(req, res) {
       address,
       shippingMethod,
       paymentMethod,
+      promoCode,
     } = req.body;
 
     const newOrder = await orderModel.create({
@@ -27,6 +29,14 @@ async function createOrder(req, res) {
       shippingMethod,
       paymentMethod,
     });
+
+    if (discount > 0) {
+      const promo = await promoCodeModel.findOne({
+        code: promoCode.toUpperCase(),
+      });
+      promo.usedCount += 1;
+      await promo.save();
+    }
 
     for (const item of orderItem) {
       if (!(item.product.size[item.size].quantity > 0)) {
