@@ -9,7 +9,6 @@ async function getCart(req, res) {
       message: "Cart merged successfully",
       cart: userCarts,
     });
-    erCarts;
   } catch (error) {
     res.status(400).json({
       message: error.message,

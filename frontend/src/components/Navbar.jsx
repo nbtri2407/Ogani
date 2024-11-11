@@ -49,8 +49,8 @@ const Navbar = ({ openCart }) => {
         withCredentials: true,
       })
       .then(function (response) {
-        toast.success(response.data.message);
         getUserDetails();
+        toast.success(response.data.message);
         navigator("/auth");
       })
       .catch(function (error) {
@@ -91,7 +91,7 @@ const Navbar = ({ openCart }) => {
     countTotalCartItems();
   }, [carts]);
 
-  window.addEventListener("cartChanged", (event) => {
+  window.addEventListener("cartChanged1", (event) => {
     countTotalCartItems();
   });
 
@@ -105,12 +105,18 @@ const Navbar = ({ openCart }) => {
     setTotalItems(totalItems);
   };
 
+  const [search, setSearch] = useState("");
+  const handleSearch = () => {
+    navigator(`/shop?pName=${search}`);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   const [wishList, setWishList] = useState(0);
-
-  window.addEventListener("cartChanged", (event) => {
-    getUserDetails();
-  });
-
   useEffect(() => {
     setWishList(user?.wishList?.length);
   }, [user]);
@@ -120,7 +126,10 @@ const Navbar = ({ openCart }) => {
       <div className="mx-auto max-w-6xl">
         <div className="grid grid-cols-12 lg:grid-rows-1 grid-rows-2 lg:gap-6 justify-between items-center">
           <div className="lg:col-span-3 col-span-12 row-start-1 lg:pb-6 flex justify-between items-center">
-            <img src={Logo} alt="logo" />
+            <a href="/">
+              <img src={Logo} alt="logo" />
+            </a>
+
             <div className="lg:hidden text-[2rem] border border-slate-400 p-1">
               <RxHamburgerMenu onClick={() => setShowMenuMb(true)} />
             </div>
@@ -160,7 +169,7 @@ const Navbar = ({ openCart }) => {
                       : "hover:text-primary transition-all"
                   }
                 >
-                  BÀI VIẾT
+                  KHUYẾN MÃI
                 </Link>
               </li>
               <li>
@@ -291,11 +300,18 @@ const Navbar = ({ openCart }) => {
             <div className="lg:col-span-6 col-span-12 row-start-1">
               <div className="w-full flex">
                 <input
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   className="outline-none border border-slate-300 flex-1 py-2.5 px-4"
                   type="text"
-                  placeholder="What do you need?"
+                  placeholder="Bạn cần tìm gì?"
                 />
-                <button className="primary-btn rounded-none">TÌM KIẾM</button>
+                <button
+                  onClick={handleSearch}
+                  className="primary-btn rounded-none"
+                >
+                  TÌM KIẾM
+                </button>
               </div>
             </div>
             <div className="hidden lg:flex lg:col-span-3 col-span-4 row-start-1  gap-6 justify-end items-center">
@@ -328,7 +344,9 @@ const Navbar = ({ openCart }) => {
                   <p className="text-slate-400">
                     Free Pickup and Delivery Available
                   </p>
-                  <button className="primary-btn mt-4">SHOP NOW</button>
+                  <a href="/shop" className="primary-btn mt-4">
+                    SHOP NOW
+                  </a>
                 </div>
               </div>
             </div>
@@ -344,34 +362,70 @@ const Navbar = ({ openCart }) => {
             transition={{ duration: 0.5 }}
             className="w-[300px] px-8 py-12 bg-white flex flex-col items-start gap-8 z-50"
           >
-            <img src={Logo} alt="logo" className="w-fit" />
+            <a href="/">
+              <img src={Logo} alt="logo" className="w-fit" />
+            </a>
             <div className="flex gap-4 lg:justify-end justify-center text-[1.4rem]">
-              <FaUser className="cursor-pointer" />
-              <FaHeart className="cursor-pointer" />
-              <BsFillHandbagFill
+              {user && user?.picture ? (
+                <Link to={"/profile"}>
+                  <img
+                    className="w-7 h-7 rounded-full cursor-pointer"
+                    src={user?.picture}
+                    alt="Rounded avatar"
+                  />
+                </Link>
+              ) : (
+                <FaUser className="cursor-pointer" />
+              )}
+
+              <Link
+                className="text-[1rem] hover:text-primary hover:underline transition-all"
+                to={"/wishlist"}
+              >
+                <div className="relative">
+                  <FaHeart className="cursor-pointer text-2xl" />
+                  {wishList > 0 && (
+                    <span className="absolute px-1 -top-2 -right-3 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
+                      {wishList}
+                    </span>
+                  )}
+                </div>
+              </Link>
+              {/* <BsFillHandbagFill
                 className="cursor-pointer"
                 onClick={openCart}
-              />
-              <p className="text-[0.9rem]">
+              /> */}
+              <div className="relative">
+                <IoCart
+                  className="cursor-pointer text-3xl"
+                  onClick={openCart}
+                />
+                {totalItems > 0 && (
+                  <span className="absolute px-1 -top-2 -right-3 text-white bg-red-500  rounded-full p-0.5 font-bold text-xs">
+                    {totalItems}
+                  </span>
+                )}
+              </div>
+              {/* <p className="text-[0.9rem]">
                 {" "}
                 item: <span className="font-bold">$150.00</span>
-              </p>
+              </p> */}
             </div>
             <ul className="flex flex-col items-start w-full">
               <li className="cursor-pointer py-2 w-full text-start border-slate-300 border-b ">
-                HOME
+                <a href="/">HOME</a>
               </li>
               <li className="cursor-pointer py-2 w-full text-start border-slate-300 border-b ">
-                SHOP
+                <a href="/shop">SHOP</a>
               </li>
               <li className="cursor-pointer py-2 w-full text-start border-slate-300 border-b ">
-                ABOUT
+                <a href="/">ABOUT</a>
               </li>
               <li className="cursor-pointer py-2 w-full text-start border-slate-300 border-b ">
-                CONTACT
+                <a href="/">CONTACT</a>
               </li>
               <li className="cursor-pointer py-2 w-full text-start border-slate-300 border-b ">
-                LOGOUT
+                <a href="/">LOGOUT</a>
               </li>
             </ul>
 
@@ -386,9 +440,9 @@ const Navbar = ({ openCart }) => {
                 <IoIosMail />
                 <p>tringuyen@gmail.com</p>
               </div>
-              <div className="w-full flex">
+              {/* <div className="w-full flex">
                 <p>Free Shipping for all Order of $99</p>
-              </div>
+              </div> */}
             </div>
           </motion.div>
 

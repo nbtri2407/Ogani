@@ -7,7 +7,6 @@ const OrderSuccess = () => {
         <p className="text-3xl text-indigo-600 font-bold">
           Đặt hàng thành công!
         </p>
-
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
           Cảm ơn bạn đã đặt hàng
         </h1>

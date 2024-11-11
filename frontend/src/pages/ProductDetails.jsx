@@ -7,10 +7,13 @@ import axios from "axios";
 import { Radio, RadioGroup } from "@headlessui/react";
 import formatPrice from "../helper/formatPrice";
 import { toast } from "react-toastify";
+import FeaturedProductCard from "../components/FeaturedSection/FeaturedProductCard";
+import ProductCard from "../components/Card/ProductCard";
 const ProductDetails = () => {
   const productId = useParams();
 
   const [productDetails, setProductDetails] = useState({});
+  const [recomment, setRecomment] = useState([]);
 
   const [showImg, setShowImg] = useState("");
   const fetchProductDetails = async () => {
@@ -23,6 +26,7 @@ const ProductDetails = () => {
       })
       .then(function (response) {
         setProductDetails(response?.data?.data);
+        setRecomment(response?.data?.products);
         setShowImg(response?.data?.data?.imageUrl?.[0]);
       })
       .catch(function (error) {
@@ -124,8 +128,8 @@ const ProductDetails = () => {
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     toast.success("Đã thêm vào giỏ hàng");
-    const cartEvent = new CustomEvent("cartChanged", {
-      detail: "newCart",
+    const cartEvent = new CustomEvent("cartChanged1", {
+      detail: "newCart1",
     });
     window.dispatchEvent(cartEvent);
   };
@@ -216,7 +220,9 @@ const ProductDetails = () => {
               <p className="ml-3 text-md font-medium text-primary">
                 {productDetails?.ratingCount} reviews
               </p>
-              <p className="ml-3 text-md font-medium">(Đã bán: {productDetails?.sold})</p>
+              <p className="ml-3 text-md font-medium">
+                (Đã bán: {productDetails?.sold})
+              </p>
             </div>
             {/* </div> */}
           </div>
@@ -398,6 +404,29 @@ const ProductDetails = () => {
             </button>
           </div>
         </div>
+      </div>
+      <div className="pt-16">
+        {recomment && (
+          <>
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+              Các sản phẩm liên quan
+            </h2>
+            <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+              {recomment?.map((p, i) => {
+                return (
+                  <div className="" key={i}>
+                    {/* <FeaturedProductCard
+                      product={p}
+                      key={i}
+                      callBack={() => fetchAllProducts()}
+                    /> */}
+                    <ProductCard product={p} />
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

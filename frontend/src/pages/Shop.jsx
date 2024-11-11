@@ -21,8 +21,12 @@ import SummaryApi from "../common/apiUrl";
 import axios from "axios";
 import FeaturedProductCard from "../components/FeaturedSection/FeaturedProductCard";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
+import ProductCard from "../components/Card/ProductCard";
 
 const Shop = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const sortOptions = [
     { name: "nameAsc", href: "#", current: true },
     { name: "Best Rating", href: "#", current: false },
@@ -57,6 +61,20 @@ const Shop = () => {
   const [priceFilter, setPriceFilter] = useState([]);
   const [nameFilter, setNameFilter] = useState("");
   const [sortType, setSortType] = useState("");
+
+  const [pName, SetPName] = useState("");
+  useEffect(() => {
+    SetPName(queryParams.get("pName") || "");
+  }, [queryParams]);
+
+  useEffect(() => {
+    setNameFilter(pName);
+    handleFilter({
+      categoryFilter,
+      priceFilter,
+      nameFilter,
+    });
+  }, [pName]);
 
   const [categories, setCategories] = useState([]);
   const fetchAllCategories = async () => {
@@ -175,6 +193,8 @@ const Shop = () => {
     paginate(filteredProducts, pageSize, currentPage)
   );
 
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     fetchAllCategories();
     fetchAllProducts();
@@ -249,7 +269,53 @@ const Shop = () => {
                     />
                   </div>
                 </div>
-
+                <Disclosure
+                  as="div"
+                  className="border-t border-gray-200 px-4 py-6"
+                >
+                  <h3 className="-mx-2 -my-3 flow-root">
+                    <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
+                      <span className="font-medium text-gray-900">
+                        Danh mục sản phẩm
+                      </span>
+                      <span className="ml-6 flex items-center">
+                        <PlusIcon
+                          aria-hidden="true"
+                          className="h-5 w-5 group-data-[open]:hidden"
+                        />
+                        <MinusIcon
+                          aria-hidden="true"
+                          className="h-5 w-5 [.group:not([data-open])_&]:hidden"
+                        />
+                      </span>
+                    </DisclosureButton>
+                  </h3>
+                  <DisclosurePanel className="pt-6">
+                    <div className="space-y-6">
+                      {categories.map((category, i) => (
+                        <div key={i} className="flex items-center">
+                          <input
+                            checked={categoryFilter.includes(
+                              category.categoryName
+                            )}
+                            onChange={() =>
+                              handleCategoryChange(category.categoryName)
+                            }
+                            id={`filter-mobilec-${i}`}
+                            type="checkbox"
+                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          />
+                          <label
+                            htmlFor={`filter-mobilec-${i}`}
+                            className="ml-3 min-w-0 flex-1 text-gray-500"
+                          >
+                            {category.categoryName}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </DisclosurePanel>
+                </Disclosure>
                 <Disclosure
                   as="div"
                   className="border-t border-gray-200 px-4 py-6"
@@ -292,53 +358,6 @@ const Shop = () => {
                             className="ml-3 min-w-0 flex-1 text-gray-500"
                           >
                             {price.label}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </DisclosurePanel>
-                </Disclosure>
-                <Disclosure
-                  as="div"
-                  className="border-t border-gray-200 px-4 py-6"
-                >
-                  <h3 className="-mx-2 -my-3 flow-root">
-                    <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                      <span className="font-medium text-gray-900">
-                        Danh mục sản phẩm
-                      </span>
-                      <span className="ml-6 flex items-center">
-                        <PlusIcon
-                          aria-hidden="true"
-                          className="h-5 w-5 group-data-[open]:hidden"
-                        />
-                        <MinusIcon
-                          aria-hidden="true"
-                          className="h-5 w-5 [.group:not([data-open])_&]:hidden"
-                        />
-                      </span>
-                    </DisclosureButton>
-                  </h3>
-                  <DisclosurePanel className="pt-6">
-                    <div className="space-y-6">
-                      {categories.map((category, i) => (
-                        <div key={i} className="flex items-center">
-                          <input
-                            checked={categoryFilter.includes(
-                              category.categoryName
-                            )}
-                            onChange={() =>
-                              handleCategoryChange(category.categoryName)
-                            }
-                            id={`filter-mobilec-${i}`}
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                          />
-                          <label
-                            htmlFor={`filter-mobilec-${i}`}
-                            className="ml-3 min-w-0 flex-1 text-gray-500"
-                          >
-                            {category.categoryName}
                           </label>
                         </div>
                       ))}
@@ -429,6 +448,53 @@ const Shop = () => {
                   <h3 className="-mx-2 -my-3 flow-root">
                     <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
                       <span className="font-medium text-gray-900">
+                        Danh mục
+                      </span>
+                      <span className="ml-6 flex items-center">
+                        <PlusIcon
+                          aria-hidden="true"
+                          className="h-5 w-5 group-data-[open]:hidden"
+                        />
+                        <MinusIcon
+                          aria-hidden="true"
+                          className="h-5 w-5 [.group:not([data-open])_&]:hidden"
+                        />
+                      </span>
+                    </DisclosureButton>
+                  </h3>
+                  <DisclosurePanel className="pt-6">
+                    <div className="space-y-6">
+                      {categories.map((category, i) => (
+                        <div key={i} className="flex items-center">
+                          <input
+                            checked={categoryFilter.includes(
+                              category.categoryName
+                            )}
+                            onChange={() =>
+                              handleCategoryChange(category.categoryName)
+                            }
+                            id={`filter-mobilec-${i}`}
+                            type="checkbox"
+                            className="h-4 w-4 rounded border-gray-300"
+                          />
+                          <label
+                            htmlFor={`filter-mobilec-${i}`}
+                            className="ml-3 min-w-0 flex-1 text-gray-500"
+                          >
+                            {category.categoryName}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </DisclosurePanel>
+                </Disclosure>
+                <Disclosure
+                  as="div"
+                  className="border-t border-gray-200 px-4 py-6"
+                >
+                  <h3 className="-mx-2 -my-3 flow-root">
+                    <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
+                      <span className="font-medium text-gray-900">
                         Khoảng giá
                       </span>
                       <span className="ml-6 flex items-center">
@@ -470,62 +536,20 @@ const Shop = () => {
                     </div>
                   </DisclosurePanel>
                 </Disclosure>
-                <Disclosure
-                  as="div"
-                  className="border-t border-gray-200 px-4 py-6"
-                >
-                  <h3 className="-mx-2 -my-3 flow-root">
-                    <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                      <span className="font-medium text-gray-900">
-                        Danh mục
-                      </span>
-                      <span className="ml-6 flex items-center">
-                        <PlusIcon
-                          aria-hidden="true"
-                          className="h-5 w-5 group-data-[open]:hidden"
-                        />
-                        <MinusIcon
-                          aria-hidden="true"
-                          className="h-5 w-5 [.group:not([data-open])_&]:hidden"
-                        />
-                      </span>
-                    </DisclosureButton>
-                  </h3>
-                  <DisclosurePanel className="pt-6">
-                    <div className="space-y-6">
-                      {categories.map((category, i) => (
-                        <div key={i} className="flex items-center">
-                          <input
-                            checked={categoryFilter.includes(
-                              category.categoryName
-                            )}
-                            onChange={() =>
-                              handleCategoryChange(category.categoryName)
-                            }
-                            id={`filter-mobilec-${i}`}
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300"
-                          />
-                          <label
-                            htmlFor={`filter-mobilec-${i}`}
-                            className="ml-3 min-w-0 flex-1 text-gray-500"
-                          >
-                            {category.categoryName}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </DisclosurePanel>
-                </Disclosure>
               </div>
               {/* Product grid */}
               {paginatedData.length > 0 ? (
                 <>
-                  <div className="lg:col-span-3 grid md:grid-cols-3 grid-cols-2 gap-4">
+                  <div className="lg:col-span-3 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
                     {paginatedData?.map((p, i) => {
                       return (
                         <div className="col-span-1" key={i}>
-                          <FeaturedProductCard
+                          {/* <FeaturedProductCard
+                            product={p}
+                            key={i}
+                            callBack={() => fetchAllProducts()}
+                          /> */}
+                          <ProductCard
                             product={p}
                             key={i}
                             callBack={() => fetchAllProducts()}

@@ -32,18 +32,23 @@ const DepartmentsList = ({ status }) => {
   useEffect(() => {
     fetchAllCategories();
   }, []);
- 
+
   return (
     <motion.ul
       initial={{ height: 0 }}
       variants={list}
       animate={status ? "show" : "hidden"}
-      className="w-full z-40 overflow-auto border text-start px-6 text-[1rem] transition-all bg-slate-50 scrollbar-custom"
+      className="w-full z-40 overflow-auto border text-start text-[1rem] transition-all bg-slate-50 scrollbar-custom"
     >
       {categories?.map((c, i) => {
         return (
-          <li key={i} className="pt-4">
-            {c.categoryName}
+          <li
+            key={i}
+            className="pt-4 px-6 flex hover:bg-slate-200 duration-200"
+          >
+            <a href={`/category/${c._id}`} className="flex-1">
+              {c.categoryName}
+            </a>
           </li>
         );
       })}

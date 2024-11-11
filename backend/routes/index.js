@@ -45,6 +45,10 @@ const deletePromoCode = require("../controllers/discount/deletePromoCode");
 const updatePromoCode = require("../controllers/discount/updatePromoCode");
 const applyPromoCode = require("../controllers/discount/applyPromoCode");
 const getStatistics1 = require("../controllers/statistics/getStatistics1");
+const getTopProduct = require("../controllers/statistics/getTopProduct");
+const getOrderStatistic = require("../controllers/statistics/getOrderStatistic");
+const getCategoryById = require("../controllers/categories/getCategoryById");
+const getRecommendations = require("../controllers/products/getRecommendations");
 const router = express.Router();
 
 router.post("/login", login);
@@ -58,8 +62,10 @@ router.post("/update-user", authToken, updateInfoUser);
 
 router.post("/wishlist", authToken, addToWishList);
 router.patch("/wishlist", authToken, deleteWishList);
+router.get("/recommentWishlist", authToken, getRecommendations);
 
 router.get("/get-all-categories", getAllCategory);
+router.get("/category", getCategoryById);
 router.post("/add-category", authToken, addCategory);
 router.delete("/delete-category", authToken, deleteCategory);
 router.put("/update-category", authToken, updateCategory);
@@ -68,8 +74,7 @@ router.get("/get-all-products", getAllProducts);
 router.post("/add-product", authToken, addProduct);
 router.delete("/delete-product", authToken, deleteProduct);
 router.put("/update-product", authToken, updateProduct);
-router.get("/product-details", productDetails);
-// router.put("/update-product", authToken, updateCategory);updateProduct addToWishList
+router.get("/product-details", productDetails); 
 
 router.post("/update-cart", authToken, updateCart);
 router.post("/merge-cart", authToken, mergeCart);
@@ -105,6 +110,8 @@ router.delete("/promoCode", authToken, deletePromoCode);
 router.post("/applyPromoCode", authToken, applyPromoCode);
 
 router.get("/statistics1", authToken, getStatistics1);
+router.get("/top-product", authToken, getTopProduct);
+router.get("/order-statistics", authToken, getOrderStatistic);
 
-// applyPromoCode
+// getProductByCategory
 module.exports = router;

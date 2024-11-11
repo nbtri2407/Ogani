@@ -48,5 +48,8 @@ const SummaryApi = {
   statistics1: {
     url: `${backendDomain}/statistics1`,
   },
-}; ///statistics1
+  topProduct: {
+    url: `${backendDomain}/top-product`,
+  },
+}; ///top-product
 export default SummaryApi;

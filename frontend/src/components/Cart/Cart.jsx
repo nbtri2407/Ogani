@@ -10,6 +10,8 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import formatPrice from "../../helper/formatPrice";
+import axios from "axios";
+import SummaryApi from "../../common/apiUrl";
 
 const Cart = ({ onClose, open }) => {
   const [carts, setCarts] = useState([]);
@@ -19,7 +21,7 @@ const Cart = ({ onClose, open }) => {
     return JSON.parse(localStorage.getItem("cart")) || [];
   };
 
-  window.addEventListener("cartChanged", (event) => {
+  window.addEventListener("cartChanged1", (event) => {
     setCarts(getCartFromLocalStorage()) || [];
     calculateTotalCartPrice();
   });
@@ -56,8 +58,8 @@ const Cart = ({ onClose, open }) => {
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     setCarts(getCartFromLocalStorage()) || [];
-    const cartEvent = new CustomEvent("cartChanged", {
-      detail: "newCart",
+    const cartEvent = new CustomEvent("cartChanged1", {
+      detail: "newCart1",
     });
     window.dispatchEvent(cartEvent);
   };
@@ -131,9 +133,41 @@ const Cart = ({ onClose, open }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
     setCarts(getCartFromLocalStorage()) || [];
     removeProductFromCart(cartItem.product, cartItem.size);
-  }; 
+  };
+
+  const updateCartToDB = async () => {
+    await axios
+      .post(
+        SummaryApi.updateCart.url,
+        {
+          cartItems: getCartFromLocalStorage(),
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then(function (response) {
+        localStorage.removeItem("cart");
+        localStorage.setItem("cart", JSON.stringify(response?.data?.data));
+        setCarts(getCartFromLocalStorage()) || [];
+        // const cartEvent = new CustomEvent("cartChanged", {
+        //   detail: "newCart",
+        // });
+        // window.dispatchEvent(cartEvent);
+      })
+      .catch(function (error) {
+        console.log(error?.response?.data?.message);
+      });
+  };
   return (
-    <Dialog open={open} onClose={onClose} className="relative z-50">
+    <Dialog
+      open={open}
+      onClose={() => {
+        onClose();
+        updateCartToDB();
+      }}
+      className="relative z-50"
+    >
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
@@ -362,7 +396,7 @@ const Cart = ({ onClose, open }) => {
                   ) : (
                     <button
                       type="button"
-                      class="text-white w-full mt-6 bg-primary/70 cursor-not-allowed font-medium border-transparent rounded-lg text-sm px-6 py-3 text-center"
+                      className="text-white w-full mt-6 bg-primary/70 cursor-not-allowed font-medium border-transparent rounded-lg text-sm px-6 py-3 text-center"
                       disabled
                     >
                       Hãy chọn sản phẩm

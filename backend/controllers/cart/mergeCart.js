@@ -26,7 +26,7 @@ async function mergeCart(req, res) {
             size: item.size,
             quantity: item.quantity,
           });
-          await newCartItem.save(); // Save the new cart item
+          await newCartItem.save();
         }
       }
     }

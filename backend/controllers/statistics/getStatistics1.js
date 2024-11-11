@@ -39,8 +39,7 @@ async function getStatistics1(req, res) {
       countProduct,
       countUser,
     });
-  } catch (error) {
-    console.error("Error applying promo code:", error);
+  } catch (error) { 
     res.status(500).json({ message: error.message });
   }
 }

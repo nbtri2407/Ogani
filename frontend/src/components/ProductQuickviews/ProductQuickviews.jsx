@@ -95,8 +95,8 @@ const ProductQuickviews = ({ product, onClose, open }) => {
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     toast.success("Đã thêm vào giỏ hàng");
-    const cartEvent = new CustomEvent("cartChanged", {
-      detail: "newCart",
+    const cartEvent = new CustomEvent("cartChanged1", {
+      detail: "newCart1",
     });
     window.dispatchEvent(cartEvent);
     onClose();
@@ -115,7 +115,7 @@ const ProductQuickviews = ({ product, onClose, open }) => {
             transition
             className="flex w-full transform text-left text-base transition data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in md:my-8 md:max-w-2xl md:px-4 data-[closed]:md:translate-y-0 data-[closed]:md:scale-95 lg:max-w-4xl"
           >
-            <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+            <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8 rounded-lg">
               <button
                 type="button"
                 onClick={() => onClose()}
@@ -157,8 +157,9 @@ const ProductQuickviews = ({ product, onClose, open }) => {
                     )}
 
                     {/* Reviews */}
-                    <div className="mt-4">
-                      <h4 className="sr-only">Reviews</h4>
+                    <div className="my-2 flex items-center">
+                      <h3 className="sr-only">Reviews</h3>
+                      {/* <div className="flex items-center gap-4"> */}
                       <div className="flex items-center">
                         <div className="flex items-center">
                           {[0, 1, 2, 3, 4].map((rating) => (
@@ -166,24 +167,25 @@ const ProductQuickviews = ({ product, onClose, open }) => {
                               key={rating}
                               aria-hidden="true"
                               className={classNames(
-                                product.rating > rating
-                                  ? "text-gray-900"
-                                  : "text-gray-200",
+                                product?.averageRating > rating
+                                  ? "text-yellow-300"
+                                  : "text-gray-400",
                                 "h-5 w-5 flex-shrink-0"
                               )}
                             />
                           ))}
                         </div>
                         <p className="sr-only">
-                          {product.rating} out of 5 stars
+                          {product?.averageRating} out of 5 stars
                         </p>
-                        <a
-                          href="#"
-                          className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                        >
-                          {product.reviewCount} reviews
-                        </a>
+                        {/* <p className="ml-3 text-md font-medium text-primary">
+                          {product?.ratingCount} reviews
+                        </p> */}
+                        <p className="ml-3 text-md font-medium">
+                          (Đã bán: {product?.sold})
+                        </p>
                       </div>
+                      {/* </div> */}
                     </div>
                   </section>
 

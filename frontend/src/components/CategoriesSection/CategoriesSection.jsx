@@ -46,7 +46,7 @@ const CategoriesSection = () => {
         },
       })
       .then(function (response) {
-        setCategories(response?.data?.data); 
+        setCategories(response?.data?.data);
       })
       .catch(function (error) {
         console.log(error?.response?.data?.message);
@@ -93,17 +93,12 @@ const CategoriesSection = () => {
               return (
                 <CategoryCard
                   key={index}
+                  _id={category._id}
                   name={category.categoryName}
                   img={category.imageUrl}
                 />
               );
-            })}
-            {/* <CategoryCard />
-            <CategoryCard />
-            <CategoryCard />
-            <CategoryCard />
-            <CategoryCard />
-            <CategoryCard /> */}
+            })} 
           </div>
           <button
             onClick={scrollRight}

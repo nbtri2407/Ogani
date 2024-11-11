@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import FeaturedProductCard from "../components/FeaturedSection/FeaturedProductCard";
+import SummaryApi from "../common/apiUrl";
+import axios from "axios";
+import ProductCard from "../components/Card/ProductCard";
 
 const WishList = () => {
   const user = useSelector((state) => state?.user?.user);
@@ -17,48 +20,114 @@ const WishList = () => {
     countTotalCartItems();
   });
 
-  const getWishList = async () => {};
+  const [recomment, setRecomment] = useState([]);
+  const [recomment2, setRecomment2] = useState([]);
+  const getRecommentProducts = async () => {
+    await axios
+      .get(SummaryApi.recommentWishlist.url, {
+        withCredentials: true,
+      })
+      .then(function (response) {
+        setRecomment(response?.data?.products);
+        setRecomment2(response?.data?.products2);
+      })
+      .catch(function (error) {
+        console.log(error?.response?.data?.message);
+      });
+  };
+
+  useEffect(() => {
+    getRecommentProducts();
+  }, []);
 
   return (
-    <div class="bg-white">
-      <div class="mx-auto max-w-6xl px-6 xl:px-0 mt-16">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900">
-          Danh sách sản phẩm yêu thích
-        </h2>
+    <div className="bg-white">
+      <div className="mx-auto max-w-6xl px-6 xl:px-0 mt-16">
+        {wishList ? (
+          wishList.length > 0 ? (
+            <>
+              <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+                Danh sách sản phẩm yêu thích
+              </h2>
+              <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                {wishList?.map((p, i) => {
+                  return (
+                    <div className="" key={i}>
+                      <FeaturedProductCard
+                        product={p}
+                        key={i}
+                        callBack={() => fetchAllProducts()}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-xl font-bold tracking-tight text-gray-900">
+                Bạn chưa có sản phẩm yêu thích nào!{" "}
+                <a
+                  className="text-primary hover:underline duration-200"
+                  href="/shop"
+                >
+                  Tất cả sản phẩm
+                </a>
+              </h2>
+            </>
+          )
+        ) : (
+          <>
+            <h2 className="text-xl font-bold tracking-tight text-gray-900">
+              <a
+                className="text-primary hover:underline duration-200"
+                href="/auth"
+              >
+                Đăng nhập
+              </a>{" "}
+              để xem danh sách yêu thích của bạn
+            </h2>
+          </>
+        )}
 
-        <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {/* <div class="group relative">
-            <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-              <img
-                src="https://tailwindui.com/plus/img/ecommerce-images/product-page-01-related-product-01.jpg"
-                alt="Front of men&#039;s Basic Tee in black."
-                class="h-full w-full object-cover object-center lg:h-full lg:w-full"
-              />
-            </div>
-            <div class="mt-4 flex justify-between">
-              <div>
-                <h3 class="text-sm text-gray-700">
-                  <a href="#">
-                    <span aria-hidden="true" class="absolute inset-0"></span>
-                    Basic Tee
-                  </a>
-                </h3>
-                <p class="mt-1 text-sm text-gray-500">Black</p>
+        <div className="pt-16">
+          {recomment && (
+            <>
+              <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+                Có thể bạn cũng thích
+              </h2>
+              <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                {recomment?.map((p, i) => {
+                  return (
+                    <div className="" key={i}>
+                      {/* <FeaturedProductCard
+                        product={p}
+                        key={i}
+                        callBack={() => fetchAllProducts()}
+                      /> */}
+                      <ProductCard product={p} />
+                    </div>
+                  );
+                })}
+                {recomment2?.map((p, i) => {
+                  return (
+                    <div className="" key={i}>
+                      {/* <FeaturedProductCard
+                        product={p}
+                        key={i}
+                        callBack={() => fetchAllProducts()}
+                      /> */}
+                      <ProductCard
+                        product={p}
+                        key={i}
+                        callBack={() => fetchAllProducts()}
+                      />
+                    </div>
+                  );
+                })}
               </div>
-              <p class="text-sm font-medium text-gray-900">$35</p>
-            </div>
-          </div> */}
-          {wishList?.map((p, i) => {
-            return (
-              <div className="" key={i}>
-                <FeaturedProductCard
-                  product={p}
-                  key={i}
-                  callBack={() => fetchAllProducts()}
-                />
-              </div>
-            );
-          })}
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -15,9 +15,9 @@ import { useState } from "react";
 import ProductQuickviews from "./components/ProductQuickviews/ProductQuickviews";
 
 function App() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); 
 
-  const getUserDetails = async () => {
+  const getUserDetails = async () => { 
     await axios
       .get(SummaryApi.getUserDetails.url, {
         withCredentials: true,
@@ -26,54 +26,20 @@ function App() {
         dispatch(setUserDetails(response?.data?.data));
       })
       .catch(function (error) {
+        dispatch(setUserDetails(null));
         console.log("error", error);
-      });
-  };
-
-  const getCartFromLocalStorage = () => {
-    return JSON.parse(localStorage.getItem("cart")) || [];
-  };
-
-  const setCartLocal = (cart) => {
-    localStorage.removeItem("cart");
-    localStorage.setItem("cart", JSON.stringify(cart));
-  };
-
-  const updateCartToDB = async () => {
-    await axios
-      .post(
-        SummaryApi.updateCart.url,
-        {
-          cartItems: getCartFromLocalStorage(),
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then(function (response) { 
-        localStorage.removeItem("cart");
-        setCartLocal(response?.data?.data);
-        const cartEvent = new CustomEvent("cartChanged", {
-          detail: "newCart",
-        });
-        window.dispatchEvent(cartEvent);
-      })
-      .catch(function (error) {
-        console.log(error?.response?.data?.message);
       });
   };
 
   useEffect(() => {
     getUserDetails();
-    // updateCartToDB();
-  });
+  },[]);
   const [openCart, setOpenCart] = useState(false);
 
   return (
     <Context.Provider value={{ getUserDetails }}>
       <Cart
         onClose={() => {
-          updateCartToDB();
           setOpenCart(false);
         }}
         open={openCart}

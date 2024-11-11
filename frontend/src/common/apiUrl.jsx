@@ -21,6 +21,9 @@ const SummaryApi = {
   getAllCategory: {
     url: `${backendDomain}/get-all-categories`,
   },
+  getCategoryById: {
+    url: `${backendDomain}/category`,
+  },
   getAllProduct: {
     url: `${backendDomain}/get-all-products`,
   },
@@ -69,6 +72,9 @@ const SummaryApi = {
   applyPromoCode: {
     url: `${backendDomain}/applyPromoCode`,
   },
+  recommentWishlist: {
+    url: `${backendDomain}/recommentWishlist`,
+  },
 };
-//applyPromoCode
+//recommentWishlist
 export default SummaryApi;
