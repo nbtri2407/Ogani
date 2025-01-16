@@ -75,6 +75,9 @@ const SummaryApi = {
   recommentWishlist: {
     url: `${backendDomain}/recommentWishlist`,
   },
+  topProduct: {
+    url: `${backendDomain}/top-product`,
+  },
 };
 //recommentWishlist
 export default SummaryApi;

@@ -11,6 +11,9 @@ import Profile from "../pages/Profile";
 import OrderSuccess from "../pages/OrderSuccess";
 import WishList from "../pages/WishList";
 import CategoryPreviews from "../pages/CategoryPreviews";
+import PromoCode from "../pages/PromoCode";
+import AboutUs from "../pages/AboutUs";
+import Contact from "../pages/Contact";
 
 const router = createBrowserRouter([
   {
@@ -61,7 +64,19 @@ const router = createBrowserRouter([
         path: "/wishlist",
         element: <WishList />,
       },
-      // WishList
+      {
+        path: "/promocode",
+        element: <PromoCode />,
+      },
+      {
+        path: "/about",
+        element: <AboutUs />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
+      },
+      // PromoCode
     ],
   },
 

@@ -40,6 +40,8 @@ const OrderTab = () => {
   }, []);
 
   const retryPayment = async (orderId, app_trans_id, amount) => {
+    console.log(1);
+    
     await axios
       .post(
         SummaryApi.retryPayment.url,
@@ -65,6 +67,8 @@ const OrderTab = () => {
   };
 
   const handleRetryPayment = async (orderId, app_trans_id, amount) => {
+    console.log(2);
+    
     const checkP = await checkPayment(app_trans_id);
     if (app_trans_id == undefined) {
       retryPayment(orderId, app_trans_id, amount);
@@ -112,7 +116,7 @@ const OrderTab = () => {
         }
       )
       .then(function (response) {
-        toast.success("Đơn hàng đã được cập nhật trạng thái");
+        // toast.success("Đơn hàng đã được cập nhật trạng thái");
         getAllOrders();
       })
       .catch(function (error) {
@@ -211,8 +215,7 @@ const OrderTab = () => {
     }
   };
 
-  const [statusFilter, setStatusFilter] = useState("");
-  console.log(statusFilter);
+  const [statusFilter, setStatusFilter] = useState(""); 
 
   // const handleUpdateStatusOrder = async (s) => {
   //   if (orderCancel) {

@@ -9,11 +9,13 @@ import formatPrice from "../helper/formatPrice";
 import { toast } from "react-toastify";
 import FeaturedProductCard from "../components/FeaturedSection/FeaturedProductCard";
 import ProductCard from "../components/Card/ProductCard";
+import Heading from "../components/heading/Heading";
 const ProductDetails = () => {
   const productId = useParams();
 
   const [productDetails, setProductDetails] = useState({});
   const [recomment, setRecomment] = useState([]);
+  const [recomment2, setRecomment2] = useState([]);
 
   const [showImg, setShowImg] = useState("");
   const fetchProductDetails = async () => {
@@ -27,6 +29,7 @@ const ProductDetails = () => {
       .then(function (response) {
         setProductDetails(response?.data?.data);
         setRecomment(response?.data?.products);
+        setRecomment2(response?.data?.recommendations);
         setShowImg(response?.data?.data?.imageUrl?.[0]);
       })
       .catch(function (error) {
@@ -408,11 +411,22 @@ const ProductDetails = () => {
       <div className="pt-16">
         {recomment && (
           <>
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-              Các sản phẩm liên quan
-            </h2>
+            <Heading title={"Các sản phẩm liên quan"} />
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
               {recomment?.map((p, i) => {
+                return (
+                  <div className="" key={i}>
+                    {/* <FeaturedProductCard
+                      product={p}
+                      key={i}
+                      callBack={() => fetchAllProducts()}
+                    /> */}
+                    <ProductCard product={p} />
+                  </div>
+                );
+              })}
+
+              {recomment2?.map((p, i) => {
                 return (
                   <div className="" key={i}>
                     {/* <FeaturedProductCard

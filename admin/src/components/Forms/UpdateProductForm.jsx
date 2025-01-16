@@ -34,9 +34,9 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
 
   const [openUpload, setOpenUpload] = useState(true);
   const [files, setFiles] = useState(data.imageUrl);
-  const [uploadedfiles, setUploadedfiles] = useState([]); 
+  const [uploadedfiles, setUploadedfiles] = useState([]);
 
-  const handleUploadImg = (items) => { 
+  const handleUploadImg = (items) => {
     setUploadedfiles([
       ...items.allEntries.filter((file) => file.status === "success"),
     ]);
@@ -60,10 +60,55 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
   };
 
   const [isGetDesAI, setIsGetDesAI] = useState(false);
+  // const getDescriptionAI = async () => {
+  //   try {
+  //     if (data.productName == "") {
+  //       toast.warning("Please enter product name!");
+  //     } else {
+  //       setIsGetDesAI(true);
+  //       const data1 = {
+  //         messages: [
+  //           {
+  //             role: "system",
+  //             content:
+  //               "Bạn là Grok, một chuyên gia về rau củ quả. Bạn sẽ luôn đưa ra mô tả cho một sản phẩm để hiển thị trên trang web của một web site thương mại về rau củ quả. Các mô tả phải đúng chi tiết và khuyến khích khách hàng chọn mua. Không có các ký tự ** trong phản hồi",
+  //           },
+  //           {
+  //             role: "user",
+  //             content: `Tạo một đoạn mô tả ngắn từ 5-6 câu cho sản phẩm có tên sản phẩm là: ${data.productName}`,
+  //           },
+  //         ],
+  //         model: "grok-beta",
+  //         stream: false,
+  //         temperature: 0,
+  //       };
+  //       const result = await axios.post(
+  //         "https://api.x.ai/v1/chat/completions",
+  //         data1,
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer xai-pzjBgxl8DpIkOC7Ss3MnItdXSnRavUt2YG1Y2aEE6hUzFlRNKIdgT32x3SVD829oaeoFu3vRlYqm0v0s`,
+  //           },
+  //         }
+  //       );
+  //       let des = result.data.choices[0].message.content;
+  //       // des = des.replace(/#/g, "");
+  //       setData((prevData) => ({
+  //         ...prevData,
+  //         description: des,
+  //       }));
+  //       setIsGetDesAI(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data from OpenAI API:", error);
+  //   }
+  // };
+
   const getDescriptionAI = async () => {
     try {
       if (data.productName == "") {
-        toast.warning("Please enter product name!");
+        toast.warning("Hãy nhập tên sản phẩm!");
       } else {
         setIsGetDesAI(true);
         const result = await axios.post(
@@ -85,8 +130,9 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
             },
           }
         );
-        let des = result.data.candidates[0].content.parts[0].text; 
-        des = des.replace(/#/g, "");  
+        let des = result.data.candidates[0].content.parts[0].text;
+        des = des.replace(/#/g, "");
+
         setData((prevData) => ({
           ...prevData,
           description: des,
@@ -96,7 +142,7 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
     } catch (error) {
       console.error("Error fetching data from OpenAI API:", error);
     }
-  }; 
+  };
 
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
@@ -128,7 +174,6 @@ const UpdateProductForm = ({ onClose, callBack, product }) => {
   useEffect(() => {
     fetchAllCategories();
   }, []);
- 
 
   useEffect(() => {
     setOpenUpload(true);

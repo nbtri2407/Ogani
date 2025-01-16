@@ -8,7 +8,7 @@ async function getStatistics1(req, res) {
       {
         $match: {
           status: { $in: ["Hoàn thành", "Đã nhận hàng"] },
-          paymentStatus: "Đã thanh toán",
+          paymentStatus: { $in: ["Đã thanh toán", "Thanh toán khi nhận hàng"] },
         },
       },
       {

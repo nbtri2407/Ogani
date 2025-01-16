@@ -49,6 +49,9 @@ const getTopProduct = require("../controllers/statistics/getTopProduct");
 const getOrderStatistic = require("../controllers/statistics/getOrderStatistic");
 const getCategoryById = require("../controllers/categories/getCategoryById");
 const getRecommendations = require("../controllers/products/getRecommendations");
+const exportCSV = require("../controllers/products/exportCSV");
+const getOrderCount = require("../controllers/statistics/getOrderCount");
+const { getRevenueStatistics } = require("../controllers/statistics/getRevenueStatistics");
 const router = express.Router();
 
 router.post("/login", login);
@@ -71,10 +74,11 @@ router.delete("/delete-category", authToken, deleteCategory);
 router.put("/update-category", authToken, updateCategory);
 
 router.get("/get-all-products", getAllProducts);
+router.get("/export", exportCSV);
 router.post("/add-product", authToken, addProduct);
 router.delete("/delete-product", authToken, deleteProduct);
 router.put("/update-product", authToken, updateProduct);
-router.get("/product-details", productDetails); 
+router.get("/product-details", productDetails);
 
 router.post("/update-cart", authToken, updateCart);
 router.post("/merge-cart", authToken, mergeCart);
@@ -102,7 +106,7 @@ router.post("/check-status-order", authToken, checkPayment);
 router.post("/retryPayment", authToken, retryPayment);
 router.post("/refundPayment", authToken, refundPayment);
 
-router.get("/promoCode", authToken, getAllPromoCode);
+router.get("/promoCode", getAllPromoCode);
 router.post("/promoCode", authToken, addPromoCode);
 router.put("/promoCode", authToken, updatePromoCode);
 router.delete("/promoCode", authToken, deletePromoCode);
@@ -110,8 +114,10 @@ router.delete("/promoCode", authToken, deletePromoCode);
 router.post("/applyPromoCode", authToken, applyPromoCode);
 
 router.get("/statistics1", authToken, getStatistics1);
-router.get("/top-product", authToken, getTopProduct);
+router.get("/top-product", getTopProduct);
 router.get("/order-statistics", authToken, getOrderStatistic);
+router.get("/orders/count", authToken, getOrderCount);
+router.get("/revenue-statistics", authToken, getRevenueStatistics);
 
-// getProductByCategory
+// getProducts
 module.exports = router;

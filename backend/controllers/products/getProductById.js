@@ -13,10 +13,27 @@ async function productDetails(req, res) {
       _id: { $ne: productId.productId },
     });
 
+    const allProducts = await productModel.find({
+      _id: { $ne: productId.productId },
+    });
+
+    const recommended = new Set(
+      products.map((product) => product._id.toString())
+    );
+
+    const recommendations = allProducts.filter(
+      (product) =>
+        !recommended.has(product._id.toString())
+    );
+
     res.status(200).json({
       status: true,
       data: product,
       products: products.slice(0, 8),
+      recommendations: recommendations.slice(
+        0,
+        8 - products.slice(0, 8).length
+      ),
       message: "Product details",
     });
   } catch (error) {

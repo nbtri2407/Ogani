@@ -14,7 +14,7 @@ async function adminLogin(req, res) {
     if (!user) {
       throw new Error("This email is not a registered user!");
     }
-
+ 
     const checkPassword = await bcrypt.compare(password, user.password);
     if (!checkPassword) {
       throw new Error("Wrong password!");

@@ -46,6 +46,14 @@ const AddAddressModal = ({ open, onClose, callBack }) => {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
 
+  // console.log("provinces",provinces);
+  // console.log("districts",districts);
+  // console.log("wards",wards);
+  console.log("selectedProvince",selectedProvince);
+  console.log("selectedDistrict",selectedDistrict);
+  console.log("selectedWard",selectedWard);
+  
+
   // Lấy danh sách tỉnh thành
   useEffect(() => {
     axios
@@ -63,7 +71,7 @@ const AddAddressModal = ({ open, onClose, callBack }) => {
     if (selectedProvince) {
       axios
         .get(
-          `https://open.oapi.vn/location/districts?page=0&size=100&provinceId=${selectedProvince}`
+          `https://open.oapi.vn/location/districts/${selectedProvince}`
         )
         .then((response) => {
           setDistricts(response.data.data);
@@ -81,7 +89,7 @@ const AddAddressModal = ({ open, onClose, callBack }) => {
     if (selectedDistrict) {
       axios
         .get(
-          `https://open.oapi.vn/location/wards?page=0&size=30&districtId=${selectedDistrict}`
+          `https://open.oapi.vn/location/wards/${selectedDistrict}`
         )
         .then((response) => {
           setWards(response.data.data);

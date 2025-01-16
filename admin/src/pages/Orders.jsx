@@ -15,6 +15,7 @@ const Orders = () => {
   const [openOrderDetail, setOpenOrderDetail] = useState(false);
   const [openCancelOrder, setOpenCancelOrder] = useState(false);
   const [updateOrderId, setUpdateOrderId] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected + 1);
@@ -52,36 +53,54 @@ const Orders = () => {
   };
 
   const paginate = (array, pageSize, currentPage) => {
+    console.log(pageSize);
+
     const startIndex = (currentPage - 1) * pageSize;
     return array.slice(startIndex, startIndex + pageSize);
   };
-
+  const [filteredOrders, setFilteredOrders] = useState([]);
   useEffect(() => {
-    setTotalPages(Math.ceil(orders.length / pageSize));
-  }, [pageSize, orders]);
+    setTotalPages(Math.ceil(filteredOrders.length / pageSize));
+  }, [pageSize, filteredOrders]);
 
   useEffect(() => {
     getAllOrder();
   }, []);
 
+  useEffect(() => {
+    const filtered = orders.filter((order) => {
+      return order.status === statusFilter || statusFilter == "";
+    });
+    setFilteredOrders(filtered);
+  }, [statusFilter]);
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredOrders, setFilteredOrders] = useState([]);
 
   useEffect(() => {
-    const searchRegex = new RegExp(searchQuery, "i");
+    try {
+      const searchRegex = new RegExp(searchQuery, "i");
 
-    const result = orders.filter((order) => {
-      return (
-        searchRegex.test(order._id) ||
-        searchRegex.test(order.address.receiver) ||
-        searchRegex.test(order.address.phone)
-      );
-    });
+      const result = orders.filter((order) => {
+        return (
+          searchRegex.test(order._id) ||
+          searchRegex.test(order.address.receiver) ||
+          searchRegex.test(order.address.phone)
+        );
+      });
 
-    setFilteredOrders(result);
+      setFilteredOrders(result);
+    } catch (error) {
+      // toast.error("Không tìm thấy đơn hàng")
+    }
   }, [searchQuery, orders]);
 
-  const paginatedData = paginate(filteredOrders, pageSize, currentPage);
+  const [paginatedData, setPaginatedData] = useState(
+    paginate(filteredOrders, pageSize, currentPage)
+  );
+
+  useEffect(() => {
+    setPaginatedData(paginate(filteredOrders, pageSize, currentPage));
+  }, [filteredOrders, pageSize, currentPage]);
 
   const updateOrderStatus = async (orderId, status) => {
     await axios
@@ -99,8 +118,8 @@ const Orders = () => {
         }
       )
       .then(function (response) {
-        toast.success("Đơn hàng đã được cập nhật trạng thái");
         getAllOrder();
+        toast.success("Đơn hàng đã được cập nhật trạng thái");
       })
       .catch(function (error) {
         console.log(error);
@@ -154,6 +173,23 @@ const Orders = () => {
             />
           </div>
         </div>
+        <div className="">
+          <select
+            onChange={(e) => setStatusFilter(e.target.value)}
+            id="countries"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            <option value={""} selected>
+              Tất cả
+            </option>
+            <option value={"Chờ xác nhận"}>Chờ xác nhận</option>
+            <option value={"Đã xác nhận"}>Đã xác nhận</option>
+            <option value={"Đang vận chuyển"}>Đang vận chuyển</option>
+            <option value={"Đã nhận hàng"}>Đã nhận hàng</option>
+            <option value={"Hoàn thành"}>Hoàn thành</option>
+            <option value={"Đã huỷ"}>Đã huỷ</option>
+          </select>
+        </div>
         <div className="flex items-center gap-2 justify-end">
           <p>Số sản phẩm trên 1 trang</p>
           <select
@@ -184,123 +220,129 @@ const Orders = () => {
             </p>
           </div>
 
-          {paginatedData.map((order, index) => (
-            <div
-              className="grid grid-cols-4 col-span-4 gap-2 border-t border-b p-4 rounded-lg bg-slate-200"
-              key={index}
-            >
-              <div className="grid grid-cols-2 gap-2 items-start lg:col-span-3 col-span-4">
-                <strong>Mã đơn hàng: </strong>
-                <p className="col-span-1 line-clamp-1">{order?._id}</p>
-                <strong>Ngày đặt hàng:</strong>
-                <p className="col-span-1">
-                  {moment(order?.createdAt).format("DD/MM/YYYY hh:mmA")}
-                </p>
-                <strong>Trạng thái đơn hàng:</strong>
-                <p
-                  className={`col-span-1 ${
-                    order?.status == "Đã huỷ" ? "text-red-500" : "text-primary"
-                  }`}
+          {paginatedData.map(
+            (order, index) =>
+              (order.status == statusFilter || statusFilter == "") && (
+                <div
+                  className="grid grid-cols-4 col-span-4 gap-2 border-t border-b p-4 rounded-lg bg-slate-200"
+                  key={index}
                 >
-                  {order?.status}
-                </p>
-                <p className="col-span-1">
-                  <strong>Tổng tiền:</strong>{" "}
-                  {formatPrice(order?.priceCheckout)}
-                </p>
-                <p className="col-span-1">{order?.paymentStatus}</p>
+                  <div className="grid grid-cols-2 gap-2 items-start lg:col-span-3 col-span-4">
+                    <strong>Mã đơn hàng: </strong>
+                    <p className="col-span-1 line-clamp-1">{order?._id}</p>
+                    <strong>Ngày đặt hàng:</strong>
+                    <p className="col-span-1">
+                      {moment(order?.createdAt).format("DD/MM/YYYY hh:mmA")}
+                    </p>
+                    <strong>Trạng thái đơn hàng:</strong>
+                    <p
+                      className={`col-span-1 ${
+                        order?.status == "Đã huỷ"
+                          ? "text-red-500"
+                          : "text-primary"
+                      }`}
+                    >
+                      {order?.status}
+                    </p>
+                    <p className="col-span-1">
+                      <strong>Tổng tiền:</strong>{" "}
+                      {formatPrice(order?.priceCheckout)}
+                    </p>
+                    <p className="col-span-1">{order?.paymentStatus}</p>
 
-                <div className="grid grid-cols-2 col-span-2 py-2">
-                  <p className="md:col-span-1 col-span-2">
-                    <strong>Người nhận:</strong>
-                    {` ${order?.address.receiver}`}
-                  </p>
-                  <p className="md:col-span-1 col-span-2">
-                    <strong>Số điện thoại:</strong>
-                    {` ${order?.address.phone}`}
-                  </p>
-                  <p className="col-span-2">
-                    <strong>Địa chỉ nhận hàng:</strong>
-                    {` ${order?.address.home}, ${order.address.ward.name}, ${order.address.district.name}, ${order.address.province.name}`}
-                  </p>
+                    <div className="grid grid-cols-2 col-span-2 py-2">
+                      <p className="md:col-span-1 col-span-2">
+                        <strong>Người nhận:</strong>
+                        {` ${order?.address.receiver}`}
+                      </p>
+                      <p className="md:col-span-1 col-span-2">
+                        <strong>Số điện thoại:</strong>
+                        {` ${order?.address.phone}`}
+                      </p>
+                      <p className="col-span-2">
+                        <strong>Địa chỉ nhận hàng:</strong>
+                        {` ${order?.address.home}, ${order.address.ward.name}, ${order.address.district.name}, ${order.address.province.name}`}
+                      </p>
+                    </div>
+                  </div>
+                  {/* grid grid-cols-4 lg:grid-cols-1 */}
+                  <div className="lg:col-span-1 col-span-4 flex lg:flex-col">
+                    <button
+                      onClick={() => {
+                        setOrderDetail(order);
+                        setOpenOrderDetail(true);
+                      }}
+                      type="button"
+                      className="text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
+                    >
+                      Xem chi tiết
+                    </button>
+                    {order?.status == "Chờ xác nhận" && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUpdateOrderId(order._id);
+                          updateOrderStatus(updateOrderId, "Đã xác nhận");
+                        }}
+                        className="text-primary hover:text-white border border-primary hover:bg-primary font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
+                      >
+                        Xác nhận đơn hàng
+                      </button>
+                    )}
+                    {order?.status == "Đã xác nhận" && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUpdateOrderId(order._id);
+                          updateOrderStatus(updateOrderId, "Đang vận chuyển");
+                        }}
+                        className="text-primary hover:text-white border border-primary hover:bg-primary font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
+                      >
+                        Đã giao vận chuyển
+                      </button>
+                    )}
+
+                    {(order?.status == "Chờ xác nhận" ||
+                      order?.status == "Đã xác nhận") && (
+                      <button
+                        onClick={() => {
+                          setUpdateOrderId(order._id);
+                          setOpenCancelOrder(true);
+                        }}
+                        type="button"
+                        className="text-red-500 hover:text-white border border-red-500 hover:bg-red-500 font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
+                      >
+                        Huỷ đơn hàng
+                      </button>
+                    )}
+
+                    {order?.status == "Hoàn thành" && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOrderDetail(order);
+                          setOpenOrderDetail(true);
+                        }}
+                        className="text-primary hover:text-white border border-primary hover:bg-primary font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
+                      >
+                        Xem đánh giá
+                      </button>
+                    )}
+                    {order?.status != "Đã huỷ" && (
+                      <button
+                        type="button"
+                        // onClick={() =>
+                        //   handleRetryPayment(item?._id, item?.orderId)
+                        // }
+                        className="text-primary hover:text-white border border-primary hover:bg-primary font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
+                      >
+                        Cập nhật trạng thái thanh toán
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-              {/* grid grid-cols-4 lg:grid-cols-1 */}
-              <div className="lg:col-span-1 col-span-4 flex lg:flex-col">
-                <button
-                  onClick={() => {
-                    setOrderDetail(order);
-                    setOpenOrderDetail(true);
-                  }}
-                  type="button"
-                  className="text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
-                >
-                  Xem chi tiết
-                </button>
-                {order?.status == "Chờ xác nhận" && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUpdateOrderId(order._id);
-                      updateOrderStatus(updateOrderId,"Đã xác nhận");
-                    }}
-                    className="text-primary hover:text-white border border-primary hover:bg-primary font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
-                  >
-                    Xác nhận đơn hàng
-                  </button>
-                )}
-                {order?.status == "Đã xác nhận" && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUpdateOrderId(order._id);
-                      updateOrderStatus(updateOrderId,"Đang vận chuyển");
-                    }}
-                    className="text-primary hover:text-white border border-primary hover:bg-primary font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
-                  >
-                    Đã giao vận chuyển
-                  </button>
-                )}
-
-                {(order?.status == "Chờ xác nhận" ||
-                  order?.status == "Đã xác nhận") && (
-                  <button
-                    onClick={() => {
-                      setUpdateOrderId(order._id);
-                      setOpenCancelOrder(true);
-                    }}
-                    type="button"
-                    className="text-red-500 hover:text-white border border-red-500 hover:bg-red-500 font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
-                  >
-                    Huỷ đơn hàng
-                  </button>
-                )}
-
-                {order?.status == "Hoàn thành" && (
-                  <button
-                    type="button"
-                    // onClick={() =>
-                    //   handleRetryPayment(order?._id, order?.orderId)
-                    // }
-                    className="text-primary hover:text-white border border-primary hover:bg-primary font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
-                  >
-                    Xem đánh giá
-                  </button>
-                )}
-                {order?.status != "Đã huỷ" && (
-                  <button
-                    type="button"
-                    // onClick={() =>
-                    //   handleRetryPayment(item?._id, item?.orderId)
-                    // }
-                    className="text-primary hover:text-white border border-primary hover:bg-primary font-medium rounded-lg text-xs md:text-sm px-2 md:px-5 py-2.5 text-center me-2 mb-2"
-                  >
-                    Cập nhật trạng thái thanh toán
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+              )
+          )}
         </div>
       </div>
       <ReactPaginate
@@ -332,8 +374,8 @@ const Orders = () => {
       )}
 
       <OrderDetailsModal
-        open={openOrderDetail}
         order={orderDetail}
+        open={openOrderDetail}
         onClose={() => setOpenOrderDetail(false)}
       />
 

@@ -43,7 +43,7 @@ async function payment(req, res) {
     item: JSON.stringify(items),
     embed_data: JSON.stringify(embed_data),
     amount: priceCheckout,
-    callback_url: "https://6afe-116-98-63-209.ngrok-free.app/api/callback",
+    callback_url: "https://c65f-2401-d800-f5b2-55ce-5045-c1f7-30a5-ec22.ngrok-free.app/api/callback",
     description: `Ogani - Payment for the order #${transID}`,
     bank_code: "",
   };

@@ -540,15 +540,10 @@ const Shop = () => {
               {/* Product grid */}
               {paginatedData.length > 0 ? (
                 <>
-                  <div className="lg:col-span-3 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+                  <div className="grid lg:col-span-3 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
                     {paginatedData?.map((p, i) => {
                       return (
-                        <div className="col-span-1" key={i}>
-                          {/* <FeaturedProductCard
-                            product={p}
-                            key={i}
-                            callBack={() => fetchAllProducts()}
-                          /> */}
+                        <div className="col-span-1" key={i}> 
                           <ProductCard
                             product={p}
                             key={i}

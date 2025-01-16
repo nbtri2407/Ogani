@@ -53,11 +53,7 @@ const WishList = () => {
                 {wishList?.map((p, i) => {
                   return (
                     <div className="" key={i}>
-                      <FeaturedProductCard
-                        product={p}
-                        key={i}
-                        callBack={() => fetchAllProducts()}
-                      />
+                      <ProductCard product={p} />
                     </div>
                   );
                 })}
@@ -100,11 +96,6 @@ const WishList = () => {
                 {recomment?.map((p, i) => {
                   return (
                     <div className="" key={i}>
-                      {/* <FeaturedProductCard
-                        product={p}
-                        key={i}
-                        callBack={() => fetchAllProducts()}
-                      /> */}
                       <ProductCard product={p} />
                     </div>
                   );

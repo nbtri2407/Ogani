@@ -147,9 +147,9 @@ const ProductCard = ({ product, callBack }) => {
           </button>
           <button
             onClick={() => setOpenProductQuickView(true)}
-            className="flex-1 px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/80"
+            className="flex-1 px-2 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/80 "
           >
-            Thêm vào giỏ
+            <p className="line-clamp-1">Thêm vào giỏ hàng</p>
           </button>
         </div>
       </div>

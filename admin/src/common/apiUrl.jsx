@@ -51,5 +51,11 @@ const SummaryApi = {
   topProduct: {
     url: `${backendDomain}/top-product`,
   },
-}; ///top-product
+  orderCount: {
+    url: `${backendDomain}/orders/count`,
+  },
+  revenueStatistics: {
+    url: `${backendDomain}/revenue-statistics`,
+  },
+}; /// /revenue-statistics
 export default SummaryApi;

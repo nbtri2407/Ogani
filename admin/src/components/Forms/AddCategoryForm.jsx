@@ -10,8 +10,7 @@ const AddCategoryForm = ({ onClose, callBack }) => {
   const [data, setData] = useState({
     categoryName: "",
     imageUrl: "",
-    description:
-      "This brand represents a symbol of trust and quality across various industries. It embodies a commitment to excellence and innovation, catering to the needs of consumers worldwide. With a focus on delivering value and performance, this brand has earned a reputation for reliability and customer satisfaction. Its products and services are designed to meet the evolving demands of a diverse global market.",
+    description: "",
   });
 
   const handleChange = (e) => {
@@ -50,8 +49,8 @@ const AddCategoryForm = ({ onClose, callBack }) => {
             },
           }
         );
-        let des = result.data.candidates[0].content.parts[0].text; 
-        des = des.replace(/#/g, ""); 
+        let des = result.data.candidates[0].content.parts[0].text;
+        des = des.replace(/#/g, "");
 
         setData((prevData) => ({
           ...prevData,

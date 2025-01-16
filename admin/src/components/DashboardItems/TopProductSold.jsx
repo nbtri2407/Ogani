@@ -6,7 +6,7 @@ const TopProductSold = ({ productList }) => {
       <h1 className="font-bold text-lg">Sản phẩm bán chạy nhất</h1>
       <div className="flex justify-between items-center">
         <p>Sản phẩm</p>
-        <p>Đã bán</p>
+        <p>Lượt mua</p>
       </div>
       <div className="grid gap-4">
         {productList.map((p, i) => {

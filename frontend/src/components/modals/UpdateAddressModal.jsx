@@ -56,7 +56,7 @@ const UpdateAddressModal = ({ addressUpdate, open, onClose, callBack }) => {
     if (selectedProvince) {
       axios
         .get(
-          `https://open.oapi.vn/location/districts?page=0&size=100&provinceId=${selectedProvince}`
+          `https://open.oapi.vn/location/districts/${selectedProvince}`
         )
         .then((response) => {
           setDistricts(response.data.data);
@@ -74,7 +74,7 @@ const UpdateAddressModal = ({ addressUpdate, open, onClose, callBack }) => {
     if (selectedDistrict) {
       axios
         .get(
-          `https://open.oapi.vn/location/wards?page=0&size=30&districtId=${selectedDistrict}`
+          `https://open.oapi.vn/location/wards/${selectedDistrict}`
         )
         .then((response) => {
           setWards(response.data.data);

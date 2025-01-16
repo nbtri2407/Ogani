@@ -24,7 +24,6 @@ async function getRecommendations(req, res) {
     const recommended = new Set(
       recommendations.map((product) => product._id.toString())
     );
-    console.log(recommended);
 
     const recommendations2 = allProducts.filter((product) =>
       !recommended.has(product._id.toString())

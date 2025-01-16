@@ -3,8 +3,8 @@ import React from "react";
 const Footer = () => {
   return (
     <footer className="bg-black text-white mt-16">
-      <div className="mx-auto w-full max-w-screen-xl">
-        <div className="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
+      <div className="mx-auto w-full max-w-screen-xl py-4    grid grid-cols-1 sm:grid-cols-3 gap-8 px-4">
+        {/* <div className="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
           <div>
             <h2 className="mb-6 text-sm font-semibold uppercase">Company</h2>
             <ul className="font-medium">
@@ -186,7 +186,54 @@ const Footer = () => {
               <span className="sr-only">Dribbble account</span>
             </a>
           </div>
+        </div> */}
+        {/* About Us Section */}
+        <div>
+          <h4 className="text-lg font-semibold mb-2">Liên kết nhanh</h4>
+          <p className="text-sm">
+            Chúng tôi cung cấp rau củ quả sạch, hữu cơ trực tiếp từ nông trại
+            đến bàn ăn của bạn. Ăn sạch, sống khỏe.
+          </p>
         </div>
+        {/* Quick Links Section */}
+        <div>
+          <h4 className="text-lg font-semibold mb-2">Quick Links</h4>
+          <ul className="text-sm space-y-2">
+            <li>
+              <a href="#" className="hover:text-gray-200">
+                Trang chủ
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-gray-200">
+                Sản phẩm
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-gray-200">
+                Liên hệ
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-gray-200">
+                Giới thiệu
+              </a>
+            </li>
+          </ul>
+        </div>
+        {/* Contact Section */}
+        <div>
+          <h4 className="text-lg font-semibold mb-2">Contact Us</h4>
+          <p className="text-sm">SĐT: +84 234 567 890</p>
+          <p className="text-sm">Email: support@organicshop.com</p>
+          <p className="text-sm">
+            Địa chỉ: 123 Đường Xanh, Thành phố Sống Khỏe
+          </p>
+        </div>
+      </div>
+      <div className="mt-8 text-center text-sm text-gray-200">
+        © {new Date().getFullYear()} Cửa hàng rau củ. Bản quyền thuộc về chúng
+        tôi.
       </div>
     </footer>
   );

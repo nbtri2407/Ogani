@@ -31,8 +31,12 @@ const Products = () => {
     setCurrentPage(data.selected + 1);
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+  // Toggle Dropdown
+  const toggleDropdown = () => setIsOpen(!isOpen);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const fetchAllProducts = async () => {
     await axios
@@ -249,14 +253,102 @@ const Products = () => {
     <div className="px-10 py-2 relative min-h-[90vh]">
       <div className="flex items-center justify-between py-4 border-b border-slate-400">
         <h1 className="text-[2rem] font-bold">Tất cả sản phẩm</h1>
+        <div className="flex items-center gap-2">
+          {/* <button
+            className="flex items-center gap-2 group hover:underline transition-all"
+            onClick={() => setShowAddForm(true)}
+          >
+            Thêm sản phẩm
+            <IoIosAddCircle className="text-[1.6rem] group-hover:text-primary transition-all cursor-pointer" />
+          </button> */}
+          <button
+            onClick={() => setShowAddForm(true)}
+            type="button"
+            className="gap-2 text-white bg-primary hover:bg-primary/80 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2"
+          >
+            <IoIosAddCircle className="text-xl group-hover:text-primary transition-all cursor-pointer" />
+            Thêm sản phẩm
+          </button>
+          {/* <a
+            href="http://localhost:5050/api/download"
+            className="gap-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2"
+          >
+            <svg
+              className="w-4 h-4 text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"
+              />
+            </svg>
+            Xuất CSV
+          </a> */}
 
-        <button
-          className="flex items-center gap-2 group hover:underline transition-all"
-          onClick={() => setShowAddForm(true)}
-        >
-          Thêm sản phẩm
-          <IoIosAddCircle className="text-[1.6rem] group-hover:text-primary transition-all cursor-pointer" />
-        </button>
+          <div className="relative inline-block text-left">
+            {/* Button */}
+            <button
+              onClick={toggleDropdown}
+              className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none"
+            >
+              Export
+              <svg
+                className="-mr-1 ml-2 h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+
+            {/* Dropdown Menu */}
+            {isOpen && (
+              <div
+                className="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="menu-button"
+                tabIndex="-1"
+              >
+                <div className="py-1" role="none">
+                  <a
+                    href="http://localhost:5050/api/export?format=csv"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-400 hover:text-white transition-all"
+                    role="menuitem"
+                    tabIndex="-1"
+                    id="menu-item-0"
+                  >
+                    File CSV
+                  </a>
+                  <a
+                    href="http://localhost:5050/api/export?format=excel"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-400 hover:text-white transition-all"
+                    role="menuitem"
+                    tabIndex="-1"
+                    id="menu-item-1"
+                  >
+                    File Excel
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* end dropdown */}
+        </div>
       </div>
       <div className="flex items-center gap-16 justify-between py-4 border-b border-slate-400">
         <div className="flex-1 flex gap-8">
@@ -447,7 +539,7 @@ const Products = () => {
                   </button>
                 </div>
               </th>
-              <th scope="col" className="px-6 py-3">
+              {/* <th scope="col" className="px-6 py-3">
                 <div className="flex items-center">
                   Giảm giá
                   <button
@@ -479,7 +571,7 @@ const Products = () => {
                     )}
                   </button>
                 </div>
-              </th>
+              </th> */}
               <th scope="col" className="px-6 py-3">
                 <div className="flex items-center">
                   Mô tả
@@ -551,7 +643,7 @@ const Products = () => {
                   <td className="px-6 py-4">{`${formatPrice(
                     getPriceRange(product).minPrice
                   )} - ${formatPrice(getPriceRange(product).maxPrice)}`}</td>
-                  <td className="px-6 py-4">{product?.discount}%</td>
+                  {/* <td className="px-6 py-4">{product?.discount}%</td> */}
                   <td className="px-6 py-4 max-w-52">
                     <p className="text-ellipsis line-clamp-2">
                       {product?.description}

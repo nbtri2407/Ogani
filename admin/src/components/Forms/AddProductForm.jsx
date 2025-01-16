@@ -17,10 +17,10 @@ const AddProductForm = ({ onClose, callBack }) => {
   });
 
   const [sizeData, setSizeData] = useState({
-    "100G": { quantity: "", price: "" },
-    "500G": { quantity: "", price: "" },
-    "1KG": { quantity: "", price: "" },
-    "5KG": { quantity: "", price: "" },
+    "100G": { quantity: "80", price: "20000" },
+    "500G": { quantity: "80", price: "50000" },
+    "1KG": { quantity: "80", price: "100000" },
+    "5KG": { quantity: "80", price: "399000" },
   });
 
   const handleInputChange = (weight, field, value) => {
@@ -53,15 +53,61 @@ const AddProductForm = ({ onClose, callBack }) => {
         setCategoriesList(response?.data?.data);
       })
       .catch(function (error) {
-        console.log("error",error); 
+        console.log("error", error);
       });
   };
 
   const [isGetDesAI, setIsGetDesAI] = useState(false);
+
+  // const getDescriptionAI = async () => {
+  //   try {
+  //     if (data.productName == "") {
+  //       toast.warning("Please enter product name!");
+  //     } else {
+  //       setIsGetDesAI(true);
+  //       const data1 = {
+  //         messages: [
+  //           {
+  //             role: "system",
+  //             content:
+  //               "Bạn là Grok, một chuyên gia về rau củ quả. Bạn sẽ luôn đưa ra mô tả cho một sản phẩm để hiển thị trên trang web của một web site thương mại về rau củ quả. Các mô tả phải đúng chi tiết và khuyến khích khách hàng chọn mua. Không có các ký tự ** trong phản hồi",
+  //           },
+  //           {
+  //             role: "user",
+  //             content: `Tạo một đoạn mô tả ngắn từ 5-6 câu cho sản phẩm có tên sản phẩm là: ${data.productName}`,
+  //           },
+  //         ],
+  //         model: "grok-beta",
+  //         stream: false,
+  //         temperature: 0,
+  //       };
+  //       const result = await axios.post(
+  //         "https://api.x.ai/v1/chat/completions",
+  //         data1,
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer xai-pzjBgxl8DpIkOC7Ss3MnItdXSnRavUt2YG1Y2aEE6hUzFlRNKIdgT32x3SVD829oaeoFu3vRlYqm0v0s`,
+  //           },
+  //         }
+  //       );
+  //       let des = result.data.choices[0].message.content;
+  //       // des = des.replace(/#/g, "");
+  //       setData((prevData) => ({
+  //         ...prevData,
+  //         description: des,
+  //       }));
+  //       setIsGetDesAI(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data from OpenAI API:", error);
+  //   }
+  // };
+
   const getDescriptionAI = async () => {
     try {
       if (data.productName == "") {
-        toast.warning("Please enter product name!");
+        toast.warning("Hãy nhập tên sản phẩm!");
       } else {
         setIsGetDesAI(true);
         const result = await axios.post(
@@ -71,7 +117,7 @@ const AddProductForm = ({ onClose, callBack }) => {
               {
                 parts: [
                   {
-                    text: `Tạo một đoạn mô tả ngắn từ 5-6 câu cho sản phẩm có tên sản phẩm là: ${data.productName}. Để hiện thị trên website bán rau củ quả sạch của tôi`,
+                    text: `Tạo một đoạn mô tả ngắn từ 5-6 câu cho sản phẩm có tên sản phẩm là: ${data.productName}. Để hiện thị trên website bán rau củ quả sạch của tôi. Phải có sự khác biệt giữa các sản phẩm.`,
                   },
                 ],
               },
@@ -83,8 +129,9 @@ const AddProductForm = ({ onClose, callBack }) => {
             },
           }
         );
-        let des = result.data.candidates[0].content.parts[0].text; 
-        des = des.replace(/#/g, "");  
+        let des = result.data.candidates[0].content.parts[0].text;
+        des = des.replace(/#/g, "");
+
         setData((prevData) => ({
           ...prevData,
           description: des,
@@ -139,7 +186,7 @@ const AddProductForm = ({ onClose, callBack }) => {
               <div className="grid sm:grid-cols-2 grid-cols-1 gap-2">
                 <div className="flex flex-col gap-1 col-span-1">
                   <label
-                    for="default-input"
+                    htmlFor="default-input"
                     className="block text-sm font-medium text-gray-900 dark:text-white"
                   >
                     Tên Sản Phẩm
@@ -186,7 +233,7 @@ const AddProductForm = ({ onClose, callBack }) => {
                 <h3 className="col-span-1">Phân loại</h3>
                 <div className="grid grid-cols-12 gap-2 items-center col-span-1 text-end">
                   <label
-                    for="small-input-100G"
+                    htmlFor="small-input-100G"
                     className="block text-sm font-bold text-black min-w-10 col-span-2"
                   >
                     100G
@@ -215,9 +262,9 @@ const AddProductForm = ({ onClose, callBack }) => {
                   />
                 </div>
                 {/* flex items-center gap-2  */}
-                <div className="grid grid-cols-12 gap-2 items-center col-span-1 text-end"> 
+                <div className="grid grid-cols-12 gap-2 items-center col-span-1 text-end">
                   <label
-                    for="small-input-500g"
+                    htmlFor="small-input-500g"
                     className="block text-sm font-bold text-black col-span-2"
                   >
                     500G
@@ -248,7 +295,7 @@ const AddProductForm = ({ onClose, callBack }) => {
 
                 <div className="grid grid-cols-12 gap-2 items-center col-span-1 text-end">
                   <label
-                    for="small-input-1KG"
+                    htmlFor="small-input-1KG"
                     className="block col-span-2 text-sm font-bold text-black min-w-10"
                   >
                     1KG
@@ -278,7 +325,7 @@ const AddProductForm = ({ onClose, callBack }) => {
                 </div>
                 <div className="grid grid-cols-12 gap-2 items-center col-span-1 text-end">
                   <label
-                    for="small-input-5KG"
+                    htmlFor="small-input-5KG"
                     className="block col-span-2 text-sm font-bold text-black min-w-10"
                   >
                     5KG
@@ -346,7 +393,7 @@ const AddProductForm = ({ onClose, callBack }) => {
                   type="text"
                   name="description"
                   id="description"
-                  spellcheck="false"
+                  spellCheck="false"
                   value={data?.description}
                   onChange={handleChange}
                   required

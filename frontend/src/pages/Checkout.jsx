@@ -341,7 +341,7 @@ const Checkout = () => {
                   >
                     <div className="block">
                       <div className="w-full text-lg font-bold">Tiêu chuẩn</div>
-                      <div className="w-full">Nhận hàng trong 1-2 ngày </div>
+                      <div className="w-full">Nhận hàng trong 24h</div>
                       <div className="w-full font-semibold">
                         {formatPrice(shipMethodList["standard"])}
                       </div>
@@ -364,7 +364,7 @@ const Checkout = () => {
                   >
                     <div className="block">
                       <div className="w-full text-lg font-bold">Hoả tốc</div>
-                      <div className="w-full">Nhận hàng trong 24h</div>
+                      <div className="w-full">Nhận hàng trong ngày</div>
                       <div className="w-full font-semibold">
                         {formatPrice(shipMethodList["express"])}
                       </div>

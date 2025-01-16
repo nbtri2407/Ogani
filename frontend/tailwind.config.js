@@ -15,6 +15,30 @@ export default {
       fontFamily: {
         sans: ["Roboto", "sans-serif"],
       },
+      keyframes: {
+        "slide-in-right": {
+          "0%": {
+            visibility: "visible",
+            transform: "translate3d(100%, 0, 0)",
+          },
+          "100%": {
+            transform: "translate3d(0, 0, 0)",
+          },
+        },
+        "slide-out-left": {
+          "0%": {
+            transform: "translate3d(0, 0, 0)",
+          },
+          "100%": {
+            visibility: "hidden",
+            transform: "translate3d(-100%, 0, 0)",
+          },
+        },
+      },
+      animation: {
+        slideinright: "slide-in-right 1s ease-in-out 0.25s 1",
+        slideoutleft: "slide-out-left 1s ease-in-out 0.25s 1",
+      },
     },
   },
   plugins: [require("flowbite/plugin")],

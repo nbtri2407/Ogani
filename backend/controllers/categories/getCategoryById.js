@@ -7,7 +7,7 @@ async function getCategoryById(req, res) {
 
     const category = await categoryModel.findById(categoryId);
     const products = await productModel
-      .find({ category: categoryId, sold: { $ne: 0 } })
+      .find({ category: categoryId })
       .sort({ sold: -1 })
       .limit(6);
 

@@ -56,9 +56,9 @@ const Users = () => {
               <th scope="col" className="px-6 py-3">
                 Số điện thoại
               </th>
-              <th scope="col" className="px-6 py-3">
+              {/* <th scope="col" className="px-6 py-3">
                 Địa chỉ
-              </th>
+              </th> */}
               <th scope="col" className="px-6 py-3">
                 Ngày đăng ký
               </th>
@@ -74,7 +74,7 @@ const Users = () => {
                   <td className="px-6 py-4">{user?.name}</td>
                   <td className="px-6 py-4">{user?.email}</td>
                   <td className="px-6 py-4">{user?.phone}</td>
-                  <td className="px-6 py-4">{user?.address}</td>
+                  {/* <td className="px-6 py-4">{user?.address}</td> */}
                   <td className="px-6 py-4">
                     {moment(user?.createdAt).format("MM/DD/YYYY h:mm A")}
                   </td>

@@ -7,6 +7,7 @@ import TopProduct from "../components/DashboardItems/TopProduct";
 import TopProductSold from "../components/DashboardItems/TopProductSold";
 import axios from "axios";
 import SummaryApi from "../common/apiUrl";
+import RevenueStatistics from "../components/DashboardItems/RevenueStatistics";
 
 const Home = () => {
   const user = useSelector((state) => state?.user?.user);
@@ -33,8 +34,24 @@ const Home = () => {
       });
   };
 
+  // const getOrdersCount = async () => {
+  //   await axios
+  //     .get(SummaryApi.orderCount.url, {
+  //       withCredentials: true,
+  //     })
+  //     .then(function (response) {
+  //       setOrderCount(response?.data);
+
+  //       console.log(response);
+  //     })
+  //     .catch(function (error) {
+  //       console.log("error", error);
+  //     });
+  // };
+
   useEffect(() => {
     getTopProducts();
+    // getOrdersCount();
   }, [user]);
 
   // topProduct
@@ -42,8 +59,14 @@ const Home = () => {
     <>
       <TotalRevenue />
       <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-4 p-4">
+        <RevenueStatistics />
         <OrderOverview />
-        <OrderOverview />
+        {/* <OrderOverview
+          title1={"Số đơn hàng tháng này"}
+          title2={"Số đơn hàng tháng trước"}
+          value1={orderCount.thisMonth}
+          value2={orderCount.lastMonth}
+        /> */}
         <TopProduct productList={topRatedProducts} />
         <TopProductSold productList={topSoldProducts} />
       </div>

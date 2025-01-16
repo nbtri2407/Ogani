@@ -17,6 +17,7 @@ const PromoCode = () => {
 
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [updatePromoCode, setUpdatePromoCode] = useState({});
+  const [deletePromoCodeId, setDeletePromoCodeId] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
@@ -234,8 +235,9 @@ const PromoCode = () => {
             <PromoCard
               key={index}
               promo={promoCode}
-              handleDelete={(id) => {
+              handleDelete={() => {
                 setShowModalDelete(true);
+                setDeletePromoCodeId(promoCode._id);
               }}
               handleEdit={(p) => {
                 console.log("p", p);

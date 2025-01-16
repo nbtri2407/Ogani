@@ -162,9 +162,9 @@ const Navbar = ({ openCart }) => {
               </li>
               <li>
                 <Link
-                  to={"/blog"}
+                  to={"/promocode"}
                   className={
-                    pathname === "/blog"
+                    pathname === "/promocode"
                       ? "text-primary"
                       : "hover:text-primary transition-all"
                   }

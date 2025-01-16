@@ -26,16 +26,18 @@ const retryPayment = async (req, res) => {
 
   try {
     const transID = Math.floor(Math.random() * 1000000);
-    let app_trans_id = appTransId;
-    if (appTransId == undefined) {
-      app_trans_id = `${moment().format("YYMMDD")}_${transID}`;
+    console.log("transID", transID);
 
-      await orderModel.findByIdAndUpdate(orderId, {
-        $set: {
-          orderId: app_trans_id,
-        },
-      });
-    }
+    // let app_trans_id = appTransId;
+    // if (appTransId == undefined) {
+    const app_trans_id = `${moment().format("YYMMDD")}_${transID}`;
+
+    await orderModel.findByIdAndUpdate(orderId, {
+      $set: {
+        orderId: app_trans_id,
+      },
+    });
+    // }
     // Gọi lại API ZaloPay để tạo liên kết thanh toán mới cho đơn hàng
     const order = {
       app_id: config.app_id,
@@ -45,7 +47,7 @@ const retryPayment = async (req, res) => {
       item: JSON.stringify(items),
       embed_data: JSON.stringify(embed_data),
       amount: amount,
-      callback_url: "https://6afe-116-98-63-209.ngrok-free.app/api/callback",
+      callback_url: "https://c65f-2401-d800-f5b2-55ce-5045-c1f7-30a5-ec22.ngrok-free.app/api/callback",
       description: `Ogani - Payment for the order #${transID}`,
       bank_code: "",
     };
@@ -67,6 +69,9 @@ const retryPayment = async (req, res) => {
     order.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
 
     const result = await axios.post(config.endpoint, null, { params: order });
+    console.log("ok");
+    console.log("result.data", result.data);
+    console.log("order.app_trans_id", order.app_trans_id);
 
     return res.status(200).json({
       data: result.data,

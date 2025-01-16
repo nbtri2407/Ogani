@@ -11,9 +11,15 @@ async function getTopProduct(req, res) {
       .sort({ sold: -1 })
       .limit(6);
 
+    const latestProducts = await productModel
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(6);
+
     res.status(200).json({
       topRatedProducts,
       topSoldProducts,
+      latestProducts,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
